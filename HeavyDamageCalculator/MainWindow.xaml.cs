@@ -35,9 +35,11 @@ namespace HeavyDamageCalculator {
 				return;
 			var bindData = this.DataContext as MainWindowViewModel;
 			// プロット用データを用意する
-			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue);
+			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
+			if(plotData.Count <= 0)
+				return;
 			{
 				var axisX = ProbChart.ChartAreas[0].AxisX;
 				axisX.Title = "最終攻撃力";
@@ -63,6 +65,10 @@ namespace HeavyDamageCalculator {
 		}
 		// スライダーを動かした際の処理
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			this.Draw();
+		}
+		// チェックボックスを切り替えた際の処理
+		private void NaiveCheckBox_Changed(object sender, RoutedEventArgs e) {
 			this.Draw();
 		}
 		// 表示をリセットする
@@ -91,7 +97,7 @@ namespace HeavyDamageCalculator {
 		private void CopyGnuplotButton_Click(object sender, RoutedEventArgs e) {
 			// プロット用データを用意する
 			var bindData = this.DataContext as MainWindowViewModel;
-			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue);
+			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
 			// コピペできるように加工する
 			var outout = "";
 			foreach(var point in plotData) {

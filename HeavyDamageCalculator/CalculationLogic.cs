@@ -26,6 +26,7 @@ namespace HeavyDamageCalculator {
 		// 轟沈ストッパーにおける最小値と範囲の倍率
 		const double MinStopperPer = 0.5;
 		const double RangeStopperPer = 0.3;
+
 		/// <summary>
 		/// プロット用データを用意する
 		/// </summary>
@@ -33,7 +34,21 @@ namespace HeavyDamageCalculator {
 		/// <param name="armor">装甲値</param>
 		/// <param name="nowHp">現在の耐久値</param>
 		/// <returns>プロット用データ</returns>
-		public static List<Point> CalcPlotData(int maxHp, int armor, int nowHp) {
+		public static List<Point> CalcPlotData(int maxHp, int armor, int nowHp, bool naiveFlg) {
+			if(naiveFlg) {
+				return CalcPlotDataNaive(maxHp, armor, nowHp);
+			} else {
+				return CalcPlotDataOriginal(maxHp, armor, nowHp);
+			}
+		}
+		/// <summary>
+		/// プロット用データを用意する(オリジナル版)
+		/// </summary>
+		/// <param name="maxHp">最大の耐久値</param>
+		/// <param name="armor">装甲値</param>
+		/// <param name="nowHp">現在の耐久値</param>
+		/// <returns>プロット用データ</returns>
+		public static List<Point> CalcPlotDataOriginal(int maxHp, int armor, int nowHp) {
 			// 大破判定を受ける最大の耐久値
 			int heavyDamageHp = maxHp / 4;
 			// 装甲乱数の最小値と範囲と最大値
@@ -76,7 +91,7 @@ namespace HeavyDamageCalculator {
 			// y軸を算出してoutputに書き込む
 			foreach(var n in node) {
 				var prob = integrateProbArea(n, armorRange, power, areaProb);
-				output.Add(new Point { X = n, Y = prob});
+				output.Add(new Point { X = n, Y = prob });
 			}
 			// x軸の値でソート
 			output.Sort((p, q) => Math.Sign(p.X - q.X));
@@ -129,7 +144,7 @@ namespace HeavyDamageCalculator {
 		/// </summary>
 		/// <param name="x">入力値</param>
 		/// <returns>制限後の入力値</returns>
-		static double compressor(double x){
+		static double compressor(double x) {
 			return (x < 0.0 ? 0.0 : x > 1.0 ? 1.0 : x);
 		}
 		/// <summary>
@@ -140,7 +155,7 @@ namespace HeavyDamageCalculator {
 		/// <param name="power">各種攻撃力</param>
 		/// <param name="areaProb">各種領域の確率</param>
 		/// <returns></returns>
-		static double integrateProbArea(double attack, double armorRange, double[] power, double[] areaProb){
+		static double integrateProbArea(double attack, double armorRange, double[] power, double[] areaProb) {
 			double rc = 0.0;
 			for(int i = 0; i < 4; ++i) {
 				// 上限
@@ -151,6 +166,19 @@ namespace HeavyDamageCalculator {
 				rc += (prob1 - prob2) * areaProb[i];
 			}
 			return rc;
+		}
+		/// <summary>
+		/// プロット用データを用意する(ナイーブ版)
+		/// </summary>
+		/// <param name="maxHp">最大の耐久値</param>
+		/// <param name="armor">装甲値</param>
+		/// <param name="nowHp">現在の耐久値</param>
+		/// <returns>プロット用データ</returns>
+		public static List<Point> CalcPlotDataNaive(int maxHp, int armor, int nowHp) {
+			// 書き込み用データを用意
+			var output = new List<Point>();
+
+			return output;
 		}
 	}
 }
