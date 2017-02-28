@@ -1,0 +1,33 @@
+﻿<Window x:Class="HeavyDamageCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HeavyDamageCalculator"
+        xmlns:wfc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+        mc:Ignorable="d"
+        Title="HeavyDamageCalculator" Height="300" Width="400">
+	<DockPanel>
+		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,10,10,5">
+			<StackPanel Orientation="Vertical">
+				<TextBlock Name="MaxHpTextBlock" Text="{Binding MaxHpText}"/>
+				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200"/>
+			</StackPanel>
+			<StackPanel Orientation="Vertical">
+				<TextBlock Name="ArmorTextBlock" Text="{Binding ArmorText}"/>
+				<Slider Name="ArmorSlider" Minimum="0" Maximum="200"/>
+			</StackPanel>
+			<StackPanel Orientation="Vertical">
+				<TextBlock Name="NowHpTextBlock" Text="{Binding NowHpText}"/>
+				<Slider Name="NowHpSlider" Minimum="1" Maximum="200"/>
+			</StackPanel>
+		</UniformGrid>
+		<WindowsFormsHost Margin="10,5,10,10">
+			<wfc:Chart x:Name="ProbChart">
+				<wfc:Chart.ChartAreas>
+					<wfc:ChartArea Name="ChartArea"/>
+				</wfc:Chart.ChartAreas>
+			</wfc:Chart>
+		</WindowsFormsHost>
+	</DockPanel>
+</Window>
