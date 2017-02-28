@@ -19,6 +19,14 @@ namespace HeavyDamageCalculator {
 				}
 			}
 		}
+		// 装甲
+		int armorValue = 49;
+		public int ArmorValue {
+			get { return armorValue; }
+			set {
+				this.SetProperty(ref this.armorValue, value);
+			}
+		}
 		// 現在耐久
 		int nowHpValue = 35;
 		public int NowHpValue {

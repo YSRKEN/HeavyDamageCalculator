@@ -30,15 +30,9 @@ namespace HeavyDamageCalculator {
 		}
 		// グラフをプロットする
 		public void Draw() {
-			// プロットするデータを用意する(スタブ)
-			var plotData = new List<Point> {
-				new Point { X = 34.3, Y = 0         },
-				new Point { X = 60.3, Y = 0         },
-				new Point { X = 63.7, Y = 0.115646  },
-				new Point { X = 68.3, Y = 0.272109  },
-				new Point { X = 89.7, Y = 0.3345    },
-				new Point { X = 97.7, Y = 0.0857143 },
-			};
+			var bindData = this.DataContext as MainWindowViewModel;
+			// プロット用データを用意する
+			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue);
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
 			var chartArea = ProbChart.ChartAreas[0];

@@ -27,7 +27,7 @@
 					<TextBlock Text="装甲：" FontSize="18"/>
 					<TextBlock Name="ArmorTextBlock" Text="{Binding Value, ElementName=ArmorSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
 				</StackPanel>
-				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="49" SmallChange="1" IsMoveToPointEnabled="True"/>
+				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="{Binding ArmorValue}" SmallChange="1" IsMoveToPointEnabled="True"/>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
