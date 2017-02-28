@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,6 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -20,6 +20,8 @@ namespace HeavyDamageCalculator {
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
 	public partial class MainWindow : Window {
+		// 複数グラフを管理するためのDictionary
+		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
 		// コンストラクタ
 		public MainWindow() {
 			InitializeComponent();
@@ -31,37 +33,71 @@ namespace HeavyDamageCalculator {
 		}
 		// グラフをプロットする
 		public void Draw() {
+			// 初期化前は何もしない
 			if(ProbChart == null)
 				return;
-			var bindData = this.DataContext as MainWindowViewModel;
 			// プロット用データを用意する
+			var bindData = this.DataContext as MainWindowViewModel;
 			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
+			ProbChart.Legends.Clear();
 			if(plotData.Count <= 0)
 				return;
+			// グラフエリアの罫線色を設定する
+			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
+			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
+			// グラフエリアにグラフを追加する
+			var maxAxisX = double.Epsilon;
+			var maxAxisY = double.Epsilon;
+			{
+				var series = new Series();
+				series.Name = "入力データ";
+				series.ChartType = SeriesChartType.Line;
+				series.BorderWidth = 2;
+				foreach(var point in plotData) {
+					series.Points.AddXY(point.X, point.Y * 100);
+					maxAxisX = Math.Max(maxAxisX, point.X);
+					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
+				}
+				ProbChart.Series.Add(series);
+				var legend = new Legend();
+				legend.DockedToChartArea = "ChartArea";
+				legend.Alignment = StringAlignment.Far;
+				ProbChart.Legends.Add(legend);
+			}
+			// グラフエリアにストックしたグラフを追加する
+			foreach(var pair in plotDataStock) {
+				var series = new Series();
+				series.Name = pair.Key;
+				series.ChartType = SeriesChartType.Line;
+				series.BorderWidth = 2;
+				foreach(var point in pair.Value) {
+					series.Points.AddXY(point.X, point.Y * 100);
+					maxAxisX = Math.Max(maxAxisX, point.X);
+					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
+				}
+				ProbChart.Series.Add(series);
+				var legend = new Legend();
+				legend.DockedToChartArea = "ChartArea";
+				legend.Alignment = StringAlignment.Far;
+				ProbChart.Legends.Add(legend);
+			}
+			// スケールを調整する
 			{
 				var axisX = ProbChart.ChartAreas[0].AxisX;
 				axisX.Title = "最終攻撃力";
 				axisX.Minimum = 0;
-				axisX.Maximum = Math.Ceiling(plotData.Max(p => p.X) / 10) * 10;
+				axisX.Maximum = Math.Ceiling(maxAxisX / 10) * 10;
 				axisX.Interval = 10;
 			}
 			{
 				var axisY = ProbChart.ChartAreas[0].AxisY;
 				axisY.Title = "大破率(％)";
 				axisY.Minimum = 0;
-				axisY.Maximum = Math.Min(Math.Ceiling(plotData.Max(p => p.Y) * 100 / 10) * 10, 100.0);
+				axisY.Maximum = Math.Min(Math.Ceiling(maxAxisY / 10) * 10, 100.0);
 				axisY.Interval = 10;
 			}
-			// グラフエリアにグラフを追加する
-			var series = new Series();
-			series.ChartType = SeriesChartType.Line;
-			series.BorderWidth = 2;
-			foreach(var point in plotData) {
-				series.Points.AddXY(point.X, point.Y * 100);
-			}
-			ProbChart.Series.Add(series);
 		}
 		// スライダーを動かした際の処理
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -73,11 +109,20 @@ namespace HeavyDamageCalculator {
 		}
 		// グラフを追加する
 		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
-			
+			// Keyを生成する
+			var bindData = this.DataContext as MainWindowViewModel;
+			var key = $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
+			// Valueを生成する
+			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
+			if(plotData.Count <= 0)
+				return;
+			// plotDataStockに追加する
+			plotDataStock[key] = plotData;
 		}
 		// グラフを削除する
 		private void ClearGraphButton_Click(object sender, RoutedEventArgs e) {
-			
+			plotDataStock = new Dictionary<string, List<Point>>();
+			this.Draw();
 		}
 		// ウィンドウサイズをリセットする
 		private void ResetButton_Click(object sender, RoutedEventArgs e) {
