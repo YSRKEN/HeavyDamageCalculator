@@ -6,20 +6,35 @@
         xmlns:local="clr-namespace:HeavyDamageCalculator"
         xmlns:wfc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         mc:Ignorable="d"
-        Title="HeavyDamageCalculator" Height="300" Width="400">
+        Title="HeavyDamageCalculator" Height="300" Width="450">
+	<Window.DataContext>
+		<local:MainWindowViewModel/>
+	</Window.DataContext>
+	<Window.Resources>
+		<local:DoubleToIntConverter x:Key="DoubleToIntConverter" />
+	</Window.Resources>
 	<DockPanel>
 		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,10,10,5">
-			<StackPanel Orientation="Vertical">
-				<TextBlock Name="MaxHpTextBlock" Text="{Binding MaxHpText}"/>
-				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200"/>
+			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="最大耐久：" FontSize="18"/>
+					<TextBlock Name="MaxHpTextBlock" Text="{Binding Value, ElementName=MaxHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+				</StackPanel>
+				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200" Value="{Binding MaxHpValue}" SmallChange="1" IsMoveToPointEnabled="True"/>
 			</StackPanel>
-			<StackPanel Orientation="Vertical">
-				<TextBlock Name="ArmorTextBlock" Text="{Binding ArmorText}"/>
-				<Slider Name="ArmorSlider" Minimum="0" Maximum="200"/>
+			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="装甲：" FontSize="18"/>
+					<TextBlock Name="ArmorTextBlock" Text="{Binding Value, ElementName=ArmorSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+				</StackPanel>
+				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="49" SmallChange="1" IsMoveToPointEnabled="True"/>
 			</StackPanel>
-			<StackPanel Orientation="Vertical">
-				<TextBlock Name="NowHpTextBlock" Text="{Binding NowHpText}"/>
-				<Slider Name="NowHpSlider" Minimum="1" Maximum="200"/>
+			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="現在耐久：" FontSize="18"/>
+					<TextBlock Name="NowHpTextBlock" Text="{Binding Value, ElementName=NowHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+				</StackPanel>
+				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True"/>
 			</StackPanel>
 		</UniformGrid>
 		<WindowsFormsHost Margin="10,5,10,10">
