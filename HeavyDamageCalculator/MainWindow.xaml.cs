@@ -76,7 +76,8 @@ namespace HeavyDamageCalculator {
 			this.Width = 450;
 			this.Height = 350;
 			var bindData = this.DataContext as MainWindowViewModel;
-			bindData.MaxHpValue = bindData.NowHpValue = 35;
+			bindData.MaxHpValue = 35;
+			bindData.NowHpValue = 35;
 			bindData.ArmorValue = 49;
 		}
 		// 画像を保存する
