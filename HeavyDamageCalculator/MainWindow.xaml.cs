@@ -71,7 +71,15 @@ namespace HeavyDamageCalculator {
 		private void NaiveCheckBox_Changed(object sender, RoutedEventArgs e) {
 			this.Draw();
 		}
-		// 表示をリセットする
+		// グラフを追加する
+		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
+			
+		}
+		// グラフを削除する
+		private void ClearGraphButton_Click(object sender, RoutedEventArgs e) {
+			
+		}
+		// ウィンドウサイズをリセットする
 		private void ResetButton_Click(object sender, RoutedEventArgs e) {
 			this.Width = 450;
 			this.Height = 350;
@@ -80,13 +88,13 @@ namespace HeavyDamageCalculator {
 			bindData.NowHpValue = 35;
 			bindData.ArmorValue = 49;
 		}
-		// 画像を保存する
+		// グラフの画像を保存する
 		private void PicSaveButton_Click(object sender, RoutedEventArgs e) {
 			var sfd = new SaveFileDialog();
 			sfd.FileName = "prob.png";
 			sfd.Filter = "PNGファイル(*.png)|*.png|すべてのファイル(*.*)|*.*";
-			sfd.ShowDialog();
-			if(sfd.FileName != "") {
+			sfd.AddExtension = true;
+			if((bool)sfd.ShowDialog()) {
 				try {
 					ProbChart.SaveImage(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
 				}catch(Exception) {

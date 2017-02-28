@@ -37,11 +37,13 @@
 				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
 			</StackPanel>
 		</UniformGrid>
-		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,5,10,5">
-			<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装" Margin="0,0,5,0" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed"/>
-			<Button Name="ResetButton" Content="表示をリセット" Margin="5,0,5,0" Click="ResetButton_Click"/>
-			<Button Name="PicSaveButton" Content="グラフ画像を保存" Margin="5,0,5,0" Click="PicSaveButton_Click"/>
-			<Button Name="CopyGnuplotButton" Content="テキスト形式でコピー" Margin="5,0,0,0" Click="CopyGnuplotButton_Click"/>
+		<UniformGrid DockPanel.Dock="Top" Rows="2" Margin="10,5,10,5">
+			<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="0,0,5,5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" HorizontalAlignment="Center"/>
+			<Button Name="AddGraphButton" Content="グラフを追加" Margin="5,0,5,5" Click="AddGraphButton_Click"/>
+			<Button Name="ClearGraphButton" Content="グラフをクリア" Margin="5,0,0,5" Click="ClearGraphButton_Click"/>
+			<Button Name="ResetButton" Content="ウィンドウサイズをリセット" Margin="0,5,5,0" Click="ResetButton_Click"/>
+			<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="5,5,5,0" Click="PicSaveButton_Click"/>
+			<Button Name="CopyGnuplotButton" Content="gnuplot形式でコピー" Margin="5,5,0,0" Click="CopyGnuplotButton_Click"/>
 		</UniformGrid>
 		<WindowsFormsHost Margin="10,5,10,10">
 			<wfc:Chart x:Name="ProbChart">
