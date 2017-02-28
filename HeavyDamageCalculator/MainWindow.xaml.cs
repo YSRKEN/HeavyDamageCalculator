@@ -30,14 +30,27 @@ namespace HeavyDamageCalculator {
 		}
 		// グラフをプロットする
 		public void Draw() {
+			if(ProbChart == null)
+				return;
 			var bindData = this.DataContext as MainWindowViewModel;
 			// プロット用データを用意する
 			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue);
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
-			var chartArea = ProbChart.ChartAreas[0];
-			chartArea.AxisX.Title = "最終攻撃力";
-			chartArea.AxisY.Title = "大破率(％)";
+			{
+				var axisX = ProbChart.ChartAreas[0].AxisX;
+				axisX.Title = "最終攻撃力";
+				axisX.Minimum = 0;
+				axisX.Maximum = Math.Ceiling(plotData.Max(p => p.X) / 10) * 10;
+				axisX.Interval = 10;
+			}
+			{
+				var axisY = ProbChart.ChartAreas[0].AxisY;
+				axisY.Title = "大破率(％)";
+				axisY.Minimum = 0;
+				axisY.Maximum = Math.Ceiling(plotData.Max(p => p.Y) * 100 / 10) * 10;
+				axisY.Interval = 10;
+			}
 			// グラフエリアにグラフを追加する
 			var series = new Series();
 			series.ChartType = SeriesChartType.Line;
@@ -46,6 +59,10 @@ namespace HeavyDamageCalculator {
 				series.Points.AddXY(point.X, point.Y * 100);
 			}
 			ProbChart.Series.Add(series);
+		}
+		// スライダーを動かした際の処理
+		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			this.Draw();
 		}
 	}
 }
