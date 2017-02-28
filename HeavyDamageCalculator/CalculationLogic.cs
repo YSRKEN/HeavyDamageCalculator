@@ -16,6 +16,7 @@ namespace HeavyDamageCalculator {
 	/// 大破率計算ロジック
 	/// </summary>
 	static class CalculationLogic {
+		#region 定数定義
 		// 装甲乱数における最小値と範囲と最大値の倍率
 		const double MinArmorPer = 0.7;
 		const double RangeArmorPer = 0.6;
@@ -26,7 +27,7 @@ namespace HeavyDamageCalculator {
 		// 轟沈ストッパーにおける最小値と範囲の倍率
 		const double MinStopperPer = 0.5;
 		const double RangeStopperPer = 0.3;
-
+		#endregion
 		/// <summary>
 		/// プロット用データを用意する
 		/// </summary>
@@ -78,7 +79,7 @@ namespace HeavyDamageCalculator {
 				calcVerylightDamageProb(nowHp, heavyDamageHp),
 				0.0,
 				1.0,
-				calcHeavyDamageProb(nowHp, heavyDamageHp),
+				calcStopperDamageProb(nowHp, heavyDamageHp),
 			};
 			// x軸を算出
 			var node = new List<double>();
@@ -124,7 +125,7 @@ namespace HeavyDamageCalculator {
 		/// <param name="nowHp">現在の耐久値</param>
 		/// <param name="heavyDamageHp">大破判定を受ける最大の耐久値</param>
 		/// <returns>轟沈ストッパー発動時の大破率</returns>
-		static double calcHeavyDamageProb(int nowHp, int heavyDamageHp) {
+		static double calcStopperDamageProb(int nowHp, int heavyDamageHp) {
 			// 大破した回数をカウントする
 			int count = 0;
 			for(int hi = 0; hi < nowHp; ++hi) {
@@ -177,7 +178,42 @@ namespace HeavyDamageCalculator {
 		public static List<Point> CalcPlotDataNaive(int maxHp, int armor, int nowHp) {
 			// 書き込み用データを用意
 			var output = new List<Point>();
-
+			// 大破判定を受ける最大の耐久値
+			int heavyDamageHp = maxHp / 4;
+			// 確実にカスダメとなる最大の最終攻撃力
+			int maxVeryLightPower = (int)(Math.Ceiling(armor * MinArmorPer));
+			// 確実に轟沈ストッパーが掛かる最小の最終攻撃力
+			int minStopperPower = nowHp + (int)(Math.Ceiling(armor * MinArmorPer + (armor - 1) * RangeArmorPer));
+			// カスダメ時の大破率
+			var verylightProb = calcVerylightDamageProb(nowHp, heavyDamageHp);
+			// 轟沈ストッパー時の大破率
+			var stopperProb = calcStopperDamageProb(nowHp, heavyDamageHp);
+			// 最終攻撃力がmaxVeryLightPowerの場合から順に計算していく
+			for(int x = maxVeryLightPower; x <= minStopperPower; ++x) {
+				double heavyDamagePer = 0.0;
+				// 装甲乱数
+				for(int ai = 0; ai < armor; ++ai) {
+					double armor_rand = 0.7 * armor + 0.6 * ai;
+					int damage = (int)(x - armor_rand);
+					if(damage <= 0) {
+						// カスダメ時の処理
+						heavyDamagePer += verylightProb / armor;
+						continue;
+					}
+					int leave_hp = nowHp - damage;
+					if(leave_hp <= 0) {
+						// 轟沈ストッパー時の処理
+						heavyDamagePer += stopperProb / armor;
+						continue;
+					}
+					// 通常のダメージ処理
+					if(leave_hp <= heavyDamageHp) {
+						heavyDamagePer += 1.0 / armor;
+					}
+				}
+				// データ追加
+				output.Add(new Point { X = (double)x, Y = heavyDamagePer });
+			}
 			return output;
 		}
 	}

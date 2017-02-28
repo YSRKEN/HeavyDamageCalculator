@@ -51,7 +51,7 @@ namespace HeavyDamageCalculator {
 				var axisY = ProbChart.ChartAreas[0].AxisY;
 				axisY.Title = "大破率(％)";
 				axisY.Minimum = 0;
-				axisY.Maximum = Math.Ceiling(plotData.Max(p => p.Y) * 100 / 10) * 10;
+				axisY.Maximum = Math.Min(Math.Ceiling(plotData.Max(p => p.Y) * 100 / 10) * 10, 100.0);
 				axisY.Interval = 10;
 			}
 			// グラフエリアにグラフを追加する
