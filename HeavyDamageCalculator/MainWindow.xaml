@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HeavyDamageCalculator"
         xmlns:wfc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         mc:Ignorable="d"
-        Title="HeavyDamageCalculator" Height="300" Width="450">
+        Title="HeavyDamageCalculator" Height="350" Width="450" MinHeight="350" MinWidth="450">
 	<Window.DataContext>
 		<local:MainWindowViewModel/>
 	</Window.DataContext>
@@ -36,6 +36,11 @@
 				</StackPanel>
 				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
 			</StackPanel>
+		</UniformGrid>
+		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,5,10,5">
+			<Button Name="ResetButton" Content="表示をリセット" Margin="0,0,5,0" Click="ResetButton_Click"/>
+			<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="5,0,5,0" Click="PicSaveButton_Click"/>
+			<Button Name="CopyGnuplotButton" Content="gnuplot形式でコピー" Margin="5,0,0,0" Click="CopyGnuplotButton_Click"/>
 		</UniformGrid>
 		<WindowsFormsHost Margin="10,5,10,10">
 			<wfc:Chart x:Name="ProbChart">

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,6 +64,45 @@ namespace HeavyDamageCalculator {
 		// スライダーを動かした際の処理
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			this.Draw();
+		}
+		// 表示をリセットする
+		private void ResetButton_Click(object sender, RoutedEventArgs e) {
+			this.Width = 450;
+			this.Height = 350;
+			var bindData = this.DataContext as MainWindowViewModel;
+			bindData.MaxHpValue = bindData.NowHpValue = 35;
+			bindData.ArmorValue = 49;
+		}
+		// 画像を保存する
+		private void PicSaveButton_Click(object sender, RoutedEventArgs e) {
+			var sfd = new SaveFileDialog();
+			sfd.FileName = "prob.png";
+			sfd.Filter = "PNGファイル(*.png)|*.png|すべてのファイル(*.*)|*.*";
+			sfd.ShowDialog();
+			if(sfd.FileName != "") {
+				try {
+					ProbChart.SaveImage(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
+				}catch(Exception) {
+					MessageBox.Show("画像の保存に失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			}
+		}
+		// gnuplot形式でコピーする
+		private void CopyGnuplotButton_Click(object sender, RoutedEventArgs e) {
+			// プロット用データを用意する
+			var bindData = this.DataContext as MainWindowViewModel;
+			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue);
+			// コピペできるように加工する
+			var outout = "";
+			foreach(var point in plotData) {
+				outout += $"{point.X} {point.Y}\n";
+			}
+			// コピーする
+			try {
+				Clipboard.SetText(outout);
+			} catch(Exception) {
+				MessageBox.Show("データのコピーに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
 		}
 	}
 }
