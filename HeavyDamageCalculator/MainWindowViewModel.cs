@@ -49,5 +49,24 @@ namespace HeavyDamageCalculator {
 				this.SetProperty(ref this.parameterName, value);
 			}
 		}
+		// ウィンドウの大きさ
+		double scaleX = 1.0;
+		public double ScaleX {
+			get {
+				return scaleX;
+			}
+			set {
+				this.SetProperty(ref this.scaleX, value);
+			}
+		}
+		double scaleY = 1.0;
+		public double ScaleY {
+			get {
+				return scaleY;
+			}
+			set {
+				this.SetProperty(ref this.scaleY, value);
+			}
+		}
 	}
 }

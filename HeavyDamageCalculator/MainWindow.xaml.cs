@@ -21,15 +21,6 @@ namespace HeavyDamageCalculator {
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
 	public partial class MainWindow : Window {
-		// 複数グラフを管理するためのDictionary
-		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
-		// グラフのスケール
-		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
-		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
-		int chartScaleIntervalIndexX = 2;
-		int chartScaleIntervalIndexY = 2;
-		// マウスにおけるドラッグ判定
-		dPoint? dragPoint = null; //マウスの移動前座標
 		// コンストラクタ
 		public MainWindow() {
 			InitializeComponent();
@@ -39,74 +30,9 @@ namespace HeavyDamageCalculator {
 			base.OnSourceInitialized(e);
 			this.Draw();
 		}
-		// グラフをプロットする
-		public void Draw() {
-			// 初期化前は何もしない
-			if(ProbChart == null)
-				return;
-			// グラフエリアを初期化する
-			ProbChart.Series.Clear();
-			ProbChart.Legends.Clear();
-			// グラフエリアの罫線色を設定する
-			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
-			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
-			// グラフエリアにグラフを追加する
-			var minAxisX = double.MaxValue;
-			var maxAxisX = double.Epsilon;
-			var maxAxisY = double.Epsilon;
-			if((bool)PrimaryCheckBox.IsChecked){
-				var series = new Series();
-				series.Name = this.ParameterKey;
-				series.ChartType = SeriesChartType.Line;
-				series.BorderWidth = 2;
-				foreach(var point in this.ParameterValue) {
-					series.Points.AddXY(point.X, point.Y * 100);
-					minAxisX = Math.Min(minAxisX, point.X);
-					maxAxisX = Math.Max(maxAxisX, point.X);
-					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
-				}
-				ProbChart.Series.Add(series);
-				var legend = new Legend();
-				legend.DockedToChartArea = "ChartArea";
-				legend.Alignment = StringAlignment.Far;
-				ProbChart.Legends.Add(legend);
-			}
-			var bindData = DataContext as MainWindowViewModel;
-			// グラフエリアにストックしたグラフを追加する
-			foreach(var pair in plotDataStock) {
-				var series = new Series();
-				series.Name = pair.Key;
-				series.ChartType = SeriesChartType.Line;
-				series.BorderWidth = 2;
-				foreach(var point in pair.Value) {
-					series.Points.AddXY(point.X, point.Y * 100);
-					minAxisX = Math.Min(minAxisX, point.X);
-					maxAxisX = Math.Max(maxAxisX, point.X);
-					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
-				}
-				ProbChart.Series.Add(series);
-				var legend = new Legend();
-				legend.DockedToChartArea = "ChartArea";
-				legend.Alignment = StringAlignment.Far;
-				ProbChart.Legends.Add(legend);
-			}
-			// スケールを調整する
-			{
-				var axisX = ProbChart.ChartAreas[0].AxisX;
-				axisX.Title = "最終攻撃力";
-				axisX.Minimum = SpecialFloor(minAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
-				axisX.Maximum = SpecialCeiling(maxAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
-				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-			}
-			{
-				var axisY = ProbChart.ChartAreas[0].AxisY;
-				axisY.Title = "大破率(％)";
-				axisY.Minimum = 0;
-				var temp = SpecialCeiling(maxAxisY, chartScaleIntervalY[chartScaleIntervalIndexY]);
-				axisY.Maximum = MaxMin(temp, 0.0, 100.0);
-				axisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-			}
-		}
+		#region 画面内のオブジェクトに関するイベント処理
+		// マウスの移動前座標
+		dPoint? dragPoint = null;
 		// スライダーを動かした際の処理
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			this.Draw();
@@ -119,18 +45,6 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		// グラフを追加する
-		string ParameterKey {
-			get {
-				var bindData = this.DataContext as MainWindowViewModel;
-				return $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
-			}
-		}
-		List<Point> ParameterValue {
-			get {
-				var bindData = this.DataContext as MainWindowViewModel;
-				return CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
-			}
-		}
 		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
 			// Keyを生成する
 			var bindData = this.DataContext as MainWindowViewModel;
@@ -169,7 +83,7 @@ namespace HeavyDamageCalculator {
 			if((bool)sfd.ShowDialog()) {
 				try {
 					ProbChart.SaveImage(sfd.FileName, System.Drawing.Imaging.ImageFormat.Png);
-				}catch(Exception) {
+				} catch(Exception) {
 					MessageBox.Show("画像の保存に失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 			}
@@ -255,6 +169,122 @@ namespace HeavyDamageCalculator {
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
+		// 罫線を細かくする
+		private void FineIntervalButton_Click(object sender, RoutedEventArgs e) {
+			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+		}
+		// 罫線を荒くする
+		private void RoughIntervalButton_Click(object sender, RoutedEventArgs e) {
+			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+		}
+		// ウィンドウのサイズが変化する
+		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
+			var bindData = this.DataContext as MainWindowViewModel;
+			var scale = (this.Width / this.MinWidth + this.Height / this.MinHeight) / 2;
+			bindData.ScaleX = scale;
+			bindData.ScaleY = scale;
+			this.Width = this.MinWidth * scale;
+			this.Height = this.MinHeight * scale;
+		}
+		#endregion
+		#region グラフ描画に関するプロパティ・メソッド
+		// 複数グラフを管理するためのDictionary
+		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
+		// グラフのスケール
+		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
+		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
+		int chartScaleIntervalIndexX = 2;
+		int chartScaleIntervalIndexY = 2;
+		// 現在のグラフ名を返すプロパティ
+		string ParameterKey {
+			get {
+				var bindData = this.DataContext as MainWindowViewModel;
+				return $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
+			}
+		}
+		// 現在のグラフデータを返すプロパティ
+		List<Point> ParameterValue {
+			get {
+				var bindData = this.DataContext as MainWindowViewModel;
+				return CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
+			}
+		}
+		// グラフをプロットする
+		public void Draw() {
+			// 初期化前は何もしない
+			if(ProbChart == null)
+				return;
+			// グラフエリアを初期化する
+			ProbChart.Series.Clear();
+			ProbChart.Legends.Clear();
+			// グラフエリアの罫線色を設定する
+			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
+			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
+			// グラフエリアにグラフを追加する
+			var minAxisX = double.MaxValue;
+			var maxAxisX = double.Epsilon;
+			var maxAxisY = double.Epsilon;
+			if((bool)PrimaryCheckBox.IsChecked) {
+				var series = new Series();
+				series.Name = this.ParameterKey;
+				series.ChartType = SeriesChartType.Line;
+				series.BorderWidth = 2;
+				foreach(var point in this.ParameterValue) {
+					series.Points.AddXY(point.X, point.Y * 100);
+					minAxisX = Math.Min(minAxisX, point.X);
+					maxAxisX = Math.Max(maxAxisX, point.X);
+					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
+				}
+				ProbChart.Series.Add(series);
+				var legend = new Legend();
+				legend.DockedToChartArea = "ChartArea";
+				legend.Alignment = StringAlignment.Far;
+				ProbChart.Legends.Add(legend);
+			}
+			var bindData = DataContext as MainWindowViewModel;
+			// グラフエリアにストックしたグラフを追加する
+			foreach(var pair in plotDataStock) {
+				var series = new Series();
+				series.Name = pair.Key;
+				series.ChartType = SeriesChartType.Line;
+				series.BorderWidth = 2;
+				foreach(var point in pair.Value) {
+					series.Points.AddXY(point.X, point.Y * 100);
+					minAxisX = Math.Min(minAxisX, point.X);
+					maxAxisX = Math.Max(maxAxisX, point.X);
+					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
+				}
+				ProbChart.Series.Add(series);
+				var legend = new Legend();
+				legend.DockedToChartArea = "ChartArea";
+				legend.Alignment = StringAlignment.Far;
+				ProbChart.Legends.Add(legend);
+			}
+			// スケールを調整する
+			{
+				var axisX = ProbChart.ChartAreas[0].AxisX;
+				axisX.Title = "最終攻撃力";
+				axisX.Minimum = SpecialFloor(minAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				axisX.Maximum = SpecialCeiling(maxAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+			}
+			{
+				var axisY = ProbChart.ChartAreas[0].AxisY;
+				axisY.Title = "大破率(％)";
+				axisY.Minimum = 0;
+				var temp = SpecialCeiling(maxAxisY, chartScaleIntervalY[chartScaleIntervalIndexY]);
+				axisY.Maximum = MaxMin(temp, 0.0, 100.0);
+				axisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+			}
+		}
+		#endregion
+		#region ユーティリティ
 		// xをstepの定数倍になるように切り下げる
 		double SpecialFloor(double x, double step) {
 			return Math.Floor(x / step) * step;
@@ -267,19 +297,6 @@ namespace HeavyDamageCalculator {
 		double MaxMin(double x, double min, double max) {
 			return (x < min ? min : x > max ? max : x);
 		}
-
-		private void FineIntervalButton_Click(object sender, RoutedEventArgs e) {
-			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-		}
-
-		private void RoughIntervalButton_Click(object sender, RoutedEventArgs e) {
-			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-		}
+		#endregion
 	}
 }
