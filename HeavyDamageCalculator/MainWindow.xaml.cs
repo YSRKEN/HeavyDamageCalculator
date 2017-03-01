@@ -222,7 +222,7 @@ namespace HeavyDamageCalculator {
 			var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
 			var diffScaleX = chartScaleX * diffWigth / chartWidth;
 			var diffScaleY = chartScaleY * diffHeight / chartHeight;
-			Console.WriteLine($"check {diffScaleX},${diffScaleY}");
+			//Console.WriteLine($"check {diffScaleX},${diffScaleY}");
 			// 移動距離が、グラフのマス目より小さい場合はまだ動かさない
 			if(Math.Abs(diffScaleX) < chartScaleIntervalX[chartScaleIntervalIndexX]
 			&& Math.Abs(diffScaleY) < chartScaleIntervalY[chartScaleIntervalIndexY])
@@ -255,21 +255,6 @@ namespace HeavyDamageCalculator {
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
-		// ProbChartの罫線を細かく/荒くする
-		private void ProbChart_KeyDown(object sender, KeyEventArgs e) {
-			if(e.Key == Key.Add) {
-				chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
-				ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-				chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
-				ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-			}
-			if(e.Key == Key.Subtract) {
-				chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
-				ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-				chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
-				ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-			}
-		}
 		// xをstepの定数倍になるように切り下げる
 		double SpecialFloor(double x, double step) {
 			return Math.Floor(x / step) * step;
@@ -281,6 +266,20 @@ namespace HeavyDamageCalculator {
 		// xをmin～maxの範囲に丸める
 		double MaxMin(double x, double min, double max) {
 			return (x < min ? min : x > max ? max : x);
+		}
+
+		private void FineIntervalButton_Click(object sender, RoutedEventArgs e) {
+			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+		}
+
+		private void RoughIntervalButton_Click(object sender, RoutedEventArgs e) {
+			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
+			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 		}
 	}
 }
