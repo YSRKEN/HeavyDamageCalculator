@@ -51,6 +51,7 @@ namespace HeavyDamageCalculator {
 			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
 			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
 			// グラフエリアにグラフを追加する
+			var minAxisX = double.MaxValue;
 			var maxAxisX = double.Epsilon;
 			var maxAxisY = double.Epsilon;
 			{
@@ -60,6 +61,7 @@ namespace HeavyDamageCalculator {
 				series.BorderWidth = 2;
 				foreach(var point in this.ParameterValue) {
 					series.Points.AddXY(point.X, point.Y * 100);
+					minAxisX = Math.Min(minAxisX, point.X);
 					maxAxisX = Math.Max(maxAxisX, point.X);
 					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
 				}
@@ -77,6 +79,7 @@ namespace HeavyDamageCalculator {
 				series.BorderWidth = 2;
 				foreach(var point in pair.Value) {
 					series.Points.AddXY(point.X, point.Y * 100);
+					minAxisX = Math.Min(minAxisX, point.X);
 					maxAxisX = Math.Max(maxAxisX, point.X);
 					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
 				}
@@ -90,7 +93,7 @@ namespace HeavyDamageCalculator {
 			{
 				var axisX = ProbChart.ChartAreas[0].AxisX;
 				axisX.Title = "最終攻撃力";
-				axisX.Minimum = 0;
+				axisX.Minimum = SpecialFloor(minAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Maximum = SpecialCeiling(maxAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 			}
@@ -217,7 +220,7 @@ namespace HeavyDamageCalculator {
 			// グラフのマス目の分だけ移動距離を丸める
 			diffScaleX = (int)SpecialFloor(diffScaleX, chartScaleIntervalX[chartScaleIntervalIndexX]);
 			diffScaleY = (int)SpecialFloor(diffScaleY, chartScaleIntervalY[chartScaleIntervalIndexY]);
-			Console.WriteLine($"move {diffScaleX},${diffScaleY}");
+			//Console.WriteLine($"move {diffScaleX},${diffScaleY}");
 			// 移動させて「範囲」から外れないかを判定しつつ動かす
 			var xmin = chartArea.AxisX.Minimum + diffScaleX;
 			var xmax = chartArea.AxisX.Maximum + diffScaleX;
