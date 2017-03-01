@@ -163,13 +163,21 @@ namespace HeavyDamageCalculator {
 			var bindData = this.DataContext as MainWindowViewModel;
 			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
 			// コピペできるように加工する
-			var outout = "";
+			var output = "[入力データ]\n";
 			foreach(var point in plotData) {
-				outout += $"{point.X} {point.Y}\n";
+				output += $"{point.X} {point.Y}\n";
+			}
+			if(plotDataStock.Count >= 1) {
+				foreach(var pair in plotDataStock) {
+					output += $"[{pair.Key}]\n";
+					foreach(var point in pair.Value) {
+						output += $"{point.X} {point.Y}\n";
+					}
+				}
 			}
 			// コピーする
 			try {
-				Clipboard.SetText(outout);
+				Clipboard.SetText(output);
 			} catch(Exception) {
 				MessageBox.Show("データのコピーに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
@@ -230,19 +238,7 @@ namespace HeavyDamageCalculator {
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
-		// xをstepの定数倍になるように切り下げる
-		double SpecialFloor(double x, double step) {
-			return Math.Floor(x / step) * step;
-		}
-		// xをstepの定数倍になるように切り上げる
-		double SpecialCeiling(double x, double step) {
-			return Math.Ceiling(x / step) * step;
-		}
-		// xをmin～maxの範囲に丸める
-		double MaxMin(double x, double min, double max) {
-			return (x < min ? min : x > max ? max : x);
-		}
-
+		// ProbChartの罫線を細かく/荒くする
 		private void ProbChart_KeyDown(object sender, KeyEventArgs e) {
 			if(e.Key == Key.Add) {
 				chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
@@ -256,6 +252,18 @@ namespace HeavyDamageCalculator {
 				chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
 				ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 			}
+		}
+		// xをstepの定数倍になるように切り下げる
+		double SpecialFloor(double x, double step) {
+			return Math.Floor(x / step) * step;
+		}
+		// xをstepの定数倍になるように切り上げる
+		double SpecialCeiling(double x, double step) {
+			return Math.Ceiling(x / step) * step;
+		}
+		// xをmin～maxの範囲に丸める
+		double MaxMin(double x, double min, double max) {
+			return (x < min ? min : x > max ? max : x);
 		}
 	}
 }
