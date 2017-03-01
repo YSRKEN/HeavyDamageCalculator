@@ -26,8 +26,8 @@ namespace HeavyDamageCalculator {
 		// グラフのスケール
 		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
 		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
-		int chartScaleIntervalIndexX = 3;
-		int chartScaleIntervalIndexY = 3;
+		int chartScaleIntervalIndexX = 2;
+		int chartScaleIntervalIndexY = 2;
 		// マウスにおけるドラッグ判定
 		dPoint? dragPoint = null; //マウスの移動前座標
 		// コンストラクタ
@@ -177,9 +177,12 @@ namespace HeavyDamageCalculator {
 		// gnuplot形式でコピーする
 		private void CopyGnuplotButton_Click(object sender, RoutedEventArgs e) {
 			// テキストを作成する
-			var output = $"[{ParameterKey}]\n";
-			foreach(var point in ParameterValue) {
-				output += $"{point.X} {point.Y}\n";
+			var output = "";
+			if((bool)PrimaryCheckBox.IsChecked) {
+				output += $"[{ParameterKey}]\n";
+				foreach(var point in ParameterValue) {
+					output += $"{point.X} {point.Y}\n";
+				}
 			}
 			if(plotDataStock.Count >= 1) {
 				foreach(var pair in plotDataStock) {
