@@ -16,12 +16,15 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace HeavyDamageCalculator {
+	using dPoint = System.Drawing.Point;
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
 	public partial class MainWindow : Window {
 		// 複数グラフを管理するためのDictionary
 		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
+		// マウスにおけるドラッグ判定
+		dPoint? dragPoint = null; //マウスの移動前座標
 		// コンストラクタ
 		public MainWindow() {
 			InitializeComponent();
@@ -163,6 +166,41 @@ namespace HeavyDamageCalculator {
 			} catch(Exception) {
 				MessageBox.Show("データのコピーに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
+		}
+		// ProbChart内でドラッグを開始した際の処理
+		private void ProbChart_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
+			dragPoint = e.Location;
+		}
+		// ProbChart内でドラッグを終了した際の処理
+		private void ProbChart_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e) {
+			dragPoint = null;
+		}
+		// ProbChart内でドラッグし続けた際の処理
+		private void ProbChart_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
+			if(!dragPoint.HasValue)
+				return;
+			// diff_Xはドラッグ時の移動距離
+			var diffWigth = dragPoint.Value.X - e.Location.X;
+			var diffHeight = e.Location.Y - dragPoint.Value.Y;
+			// 移動距離をグラフ座標に変換する
+			var chartWidth = ProbChart.Width;
+			var chartHeight = ProbChart.Height;
+			var chartArea = ProbChart.ChartAreas[0];
+			var chartScaleX = chartArea.AxisX.Maximum - chartArea.AxisX.Minimum;
+			var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
+			var diffScaleX = chartScaleX * diffWigth / chartWidth;
+			var diffScaleY = chartScaleY * diffHeight / chartHeight;
+			Console.WriteLine($"{diffScaleX},${diffScaleY}");
+			if(Math.Abs(diffScaleX) < 10.0 && Math.Abs(diffScaleY) < 10.0)
+				return;
+			diffScaleX = (int)(diffScaleX / 10) * 10;
+			diffScaleY = (int)(diffScaleY / 10) * 10;
+			chartArea.AxisX.Minimum += diffScaleX;
+			chartArea.AxisX.Maximum += diffScaleX;
+			chartArea.AxisY.Minimum += diffScaleY;
+			chartArea.AxisY.Maximum += diffScaleY;
+			// dragPointを変更
+			dragPoint = e.Location;
 		}
 	}
 }

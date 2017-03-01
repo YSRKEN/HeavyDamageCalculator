@@ -46,7 +46,7 @@
 			<Button Name="CopyGnuplotButton" Content="gnuplot形式でコピー" Margin="5,5,0,0" Click="CopyGnuplotButton_Click"/>
 		</UniformGrid>
 		<WindowsFormsHost Margin="10,5,10,10">
-			<wfc:Chart x:Name="ProbChart">
+			<wfc:Chart x:Name="ProbChart" MouseDown="ProbChart_MouseDown" MouseUp="ProbChart_MouseUp" MouseMove="ProbChart_MouseMove">
 				<wfc:Chart.ChartAreas>
 					<wfc:ChartArea Name="ChartArea"/>
 				</wfc:Chart.ChartAreas>
