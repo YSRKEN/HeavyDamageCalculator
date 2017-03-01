@@ -23,6 +23,11 @@ namespace HeavyDamageCalculator {
 	public partial class MainWindow : Window {
 		// 複数グラフを管理するためのDictionary
 		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
+		// グラフのスケール
+		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
+		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
+		int chartScaleIntervalIndexX = 2;
+		int chartScaleIntervalIndexY = 2;
 		// マウスにおけるドラッグ判定
 		dPoint? dragPoint = null; //マウスの移動前座標
 		// コンストラクタ
@@ -91,15 +96,16 @@ namespace HeavyDamageCalculator {
 				var axisX = ProbChart.ChartAreas[0].AxisX;
 				axisX.Title = "最終攻撃力";
 				axisX.Minimum = 0;
-				axisX.Maximum = Math.Ceiling(maxAxisX / 10) * 10;
-				axisX.Interval = 10;
+				axisX.Maximum = SpecialCeiling(maxAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 			}
 			{
 				var axisY = ProbChart.ChartAreas[0].AxisY;
 				axisY.Title = "大破率(％)";
 				axisY.Minimum = 0;
-				axisY.Maximum = Math.Min(Math.Ceiling(maxAxisY / 10) * 10, 100.0);
-				axisY.Interval = 10;
+				var temp = SpecialCeiling(maxAxisY, chartScaleIntervalY[chartScaleIntervalIndexY]);
+				axisY.Maximum = MaxMin(temp, 0.0, 100.0);
+				axisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 			}
 		}
 		// スライダーを動かした際の処理
@@ -135,6 +141,7 @@ namespace HeavyDamageCalculator {
 			bindData.MaxHpValue = 35;
 			bindData.NowHpValue = 35;
 			bindData.ArmorValue = 49;
+			this.Draw();
 		}
 		// グラフの画像を保存する
 		private void PicSaveButton_Click(object sender, RoutedEventArgs e) {
@@ -190,17 +197,50 @@ namespace HeavyDamageCalculator {
 			var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
 			var diffScaleX = chartScaleX * diffWigth / chartWidth;
 			var diffScaleY = chartScaleY * diffHeight / chartHeight;
-			Console.WriteLine($"{diffScaleX},${diffScaleY}");
-			if(Math.Abs(diffScaleX) < 10.0 && Math.Abs(diffScaleY) < 10.0)
+			Console.WriteLine($"check {diffScaleX},${diffScaleY}");
+			// 移動距離が、グラフのマス目より小さい場合はまだ動かさない
+			if(Math.Abs(diffScaleX) < chartScaleIntervalX[chartScaleIntervalIndexX]
+			&& Math.Abs(diffScaleY) < chartScaleIntervalY[chartScaleIntervalIndexY])
 				return;
-			diffScaleX = (int)(diffScaleX / 10) * 10;
-			diffScaleY = (int)(diffScaleY / 10) * 10;
-			chartArea.AxisX.Minimum += diffScaleX;
-			chartArea.AxisX.Maximum += diffScaleX;
-			chartArea.AxisY.Minimum += diffScaleY;
-			chartArea.AxisY.Maximum += diffScaleY;
+			// グラフのマス目の分だけ移動距離を丸める
+			diffScaleX = (int)SpecialFloor(diffScaleX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+			diffScaleY = (int)SpecialFloor(diffScaleY, chartScaleIntervalY[chartScaleIntervalIndexY]);
+			Console.WriteLine($"move {diffScaleX},${diffScaleY}");
+			// 移動させて「範囲」から外れないかを判定しつつ動かす
+			var xmin = chartArea.AxisX.Minimum + diffScaleX;
+			var xmax = chartArea.AxisX.Maximum + diffScaleX;
+			if(xmin < 0) {
+				xmax += -xmin;
+				xmin = 0;
+			}
+			chartArea.AxisX.Minimum = xmin;
+			chartArea.AxisX.Maximum = xmax;
+			var ymin = chartArea.AxisY.Minimum + diffScaleY;
+			var ymax = chartArea.AxisY.Maximum + diffScaleY;
+			if(ymin < 0) {
+				ymax += -ymin;
+				ymin = 0;
+			}
+			if(ymax > 100) {
+				ymin -= ymax - 100;
+				ymax = 100;
+			}
+			chartArea.AxisY.Minimum = ymin;
+			chartArea.AxisY.Maximum = ymax;
 			// dragPointを変更
 			dragPoint = e.Location;
+		}
+		// xをstepの定数倍になるように切り下げる
+		double SpecialFloor(double x, double step) {
+			return Math.Floor(x / step) * step;
+		}
+		// xをstepの定数倍になるように切り上げる
+		double SpecialCeiling(double x, double step) {
+			return Math.Ceiling(x / step) * step;
+		}
+		// xをmin～maxの範囲に丸める
+		double MaxMin(double x, double min, double max) {
+			return (x < min ? min : x > max ? max : x);
 		}
 	}
 }
