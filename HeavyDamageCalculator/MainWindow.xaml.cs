@@ -44,14 +44,9 @@ namespace HeavyDamageCalculator {
 			// 初期化前は何もしない
 			if(ProbChart == null)
 				return;
-			// プロット用データを用意する
-			var bindData = this.DataContext as MainWindowViewModel;
-			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
 			ProbChart.Legends.Clear();
-			if(plotData.Count <= 0)
-				return;
 			// グラフエリアの罫線色を設定する
 			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
 			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
@@ -60,10 +55,10 @@ namespace HeavyDamageCalculator {
 			var maxAxisY = double.Epsilon;
 			{
 				var series = new Series();
-				series.Name = "入力データ";
+				series.Name = this.ParameterKey;
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
-				foreach(var point in plotData) {
+				foreach(var point in this.ParameterValue) {
 					series.Points.AddXY(point.X, point.Y * 100);
 					maxAxisX = Math.Max(maxAxisX, point.X);
 					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
@@ -117,16 +112,28 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		// グラフを追加する
+		string ParameterKey {
+			get {
+				var bindData = this.DataContext as MainWindowViewModel;
+				return $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
+			}
+		}
+		List<Point> ParameterValue {
+			get {
+				var bindData = this.DataContext as MainWindowViewModel;
+				return CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
+			}
+		}
 		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
 			// Keyを生成する
 			var bindData = this.DataContext as MainWindowViewModel;
-			var key = $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
+			var key = this.ParameterKey;
 			// Valueを生成する
-			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
-			if(plotData.Count <= 0)
+			var value = this.ParameterValue;
+			if(value.Count <= 0)
 				return;
 			// plotDataStockに追加する
-			plotDataStock[key] = plotData;
+			plotDataStock[key] = value;
 		}
 		// グラフを削除する
 		private void ClearGraphButton_Click(object sender, RoutedEventArgs e) {
@@ -159,12 +166,9 @@ namespace HeavyDamageCalculator {
 		}
 		// gnuplot形式でコピーする
 		private void CopyGnuplotButton_Click(object sender, RoutedEventArgs e) {
-			// プロット用データを用意する
-			var bindData = this.DataContext as MainWindowViewModel;
-			var plotData = CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
-			// コピペできるように加工する
-			var output = "[入力データ]\n";
-			foreach(var point in plotData) {
+			// テキストを作成する
+			var output = $"[{ParameterKey}]\n";
+			foreach(var point in ParameterValue) {
 				output += $"{point.X} {point.Y}\n";
 			}
 			if(plotDataStock.Count >= 1) {
