@@ -39,5 +39,15 @@ namespace HeavyDamageCalculator {
 				this.SetProperty(ref this.nowHpValue, Math.Min(maxHpValue, value));
 			}
 		}
+		// パラメーター名
+		string parameterName = "";
+		public string ParameterName {
+			get {
+				return parameterName;
+			}
+			set {
+				this.SetProperty(ref this.parameterName, value);
+			}
+		}
 	}
 }

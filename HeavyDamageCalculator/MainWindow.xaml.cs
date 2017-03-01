@@ -54,7 +54,7 @@ namespace HeavyDamageCalculator {
 			var minAxisX = double.MaxValue;
 			var maxAxisX = double.Epsilon;
 			var maxAxisY = double.Epsilon;
-			{
+			if((bool)PrimaryCheckBox.IsChecked){
 				var series = new Series();
 				series.Name = this.ParameterKey;
 				series.ChartType = SeriesChartType.Line;
@@ -71,6 +71,7 @@ namespace HeavyDamageCalculator {
 				legend.Alignment = StringAlignment.Far;
 				ProbChart.Legends.Add(legend);
 			}
+			var bindData = DataContext as MainWindowViewModel;
 			// グラフエリアにストックしたグラフを追加する
 			foreach(var pair in plotDataStock) {
 				var series = new Series();
@@ -114,6 +115,9 @@ namespace HeavyDamageCalculator {
 		private void NaiveCheckBox_Changed(object sender, RoutedEventArgs e) {
 			this.Draw();
 		}
+		private void PrimaryCheckBox_Changed(object sender, RoutedEventArgs e) {
+			this.Draw();
+		}
 		// グラフを追加する
 		string ParameterKey {
 			get {
@@ -130,7 +134,7 @@ namespace HeavyDamageCalculator {
 		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
 			// Keyを生成する
 			var bindData = this.DataContext as MainWindowViewModel;
-			var key = this.ParameterKey;
+			var key = bindData.ParameterName;
 			// Valueを生成する
 			var value = this.ParameterValue;
 			if(value.Count <= 0)
@@ -144,9 +148,12 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		// ウィンドウサイズをリセットする
-		private void ResetButton_Click(object sender, RoutedEventArgs e) {
+		private void WindowSizeResetButton_Click(object sender, RoutedEventArgs e) {
 			this.Width = 450;
 			this.Height = 350;
+		}
+		// パラメーターをリセットする
+		private void ParameterResetButton_Click(object sender, RoutedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
 			bindData.MaxHpValue = 35;
 			bindData.NowHpValue = 35;
@@ -197,7 +204,7 @@ namespace HeavyDamageCalculator {
 		private void ProbChart_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e) {
 			dragPoint = null;
 		}
-		// ProbChart内でドラッグし続けた際の処理
+		// ProbChart内でマウスを動かした際の処理
 		private void ProbChart_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
 			if(!dragPoint.HasValue)
 				return;

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HeavyDamageCalculator"
         xmlns:wfc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         mc:Ignorable="d"
-        Title="HeavyDamageCalculator" Height="350" Width="450" MinHeight="350" MinWidth="450">
+        Title="HeavyDamageCalculator" Height="400" Width="500" MinHeight="400" MinWidth="500">
 	<Window.DataContext>
 		<local:MainWindowViewModel/>
 	</Window.DataContext>
@@ -37,13 +37,16 @@
 				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
 			</StackPanel>
 		</UniformGrid>
-		<UniformGrid DockPanel.Dock="Top" Rows="2" Margin="10,5,10,5">
-			<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="0,0,5,5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" HorizontalAlignment="Center"/>
-			<Button Name="AddGraphButton" Content="グラフを追加" Margin="5,0,5,5" Click="AddGraphButton_Click"/>
-			<Button Name="ClearGraphButton" Content="グラフをクリア" Margin="5,0,0,5" Click="ClearGraphButton_Click"/>
-			<Button Name="ResetButton" Content="ウィンドウサイズをリセット" Margin="0,5,5,0" Click="ResetButton_Click"/>
-			<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="5,5,5,0" Click="PicSaveButton_Click"/>
-			<Button Name="CopyGnuplotButton" Content="gnuplot形式でコピー" Margin="5,5,0,0" Click="CopyGnuplotButton_Click"/>
+		<UniformGrid DockPanel.Dock="Top" Rows="3" Margin="5,5,5,5">
+			<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="5,5,5,5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" HorizontalAlignment="Center"/>
+			<CheckBox Name="PrimaryCheckBox" Content="入力データを非表示" Margin="5,5,5,5" VerticalAlignment="Center" IsChecked="True" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" HorizontalAlignment="Center"/>
+			<Button Name="WindowSizeResetButton" Content="ウィンドウサイズをリセット" Margin="5,5,5,5" Click="WindowSizeResetButton_Click"/>
+			<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" Margin="5,5,5,5" />
+			<Button Name="AddGraphButton" Content="グラフを追加" Margin="5,5,5,5" Click="AddGraphButton_Click"/>
+			<Button Name="ClearGraphButton" Content="グラフをクリア" Margin="5,5,5,5" Click="ClearGraphButton_Click"/>
+			<Button Name="ParameterResetButton" Content="パラメーターをリセット" Margin="5,5,5,5" Click="ParameterResetButton_Click"/>
+			<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="5,5,5,5" Click="PicSaveButton_Click"/>
+			<Button Name="CopyGnuplotButton" Content="gnuplot形式でコピー" Margin="5,5,5,5" Click="CopyGnuplotButton_Click"/>
 		</UniformGrid>
 		<WindowsFormsHost Margin="10,5,10,10" KeyDown="ProbChart_KeyDown">
 			<wfc:Chart x:Name="ProbChart" MouseDown="ProbChart_MouseDown" MouseUp="ProbChart_MouseUp" MouseMove="ProbChart_MouseMove">
