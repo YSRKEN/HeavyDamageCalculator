@@ -26,8 +26,8 @@ namespace HeavyDamageCalculator {
 		// グラフのスケール
 		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
 		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
-		int chartScaleIntervalIndexX = 2;
-		int chartScaleIntervalIndexY = 2;
+		int chartScaleIntervalIndexX = 3;
+		int chartScaleIntervalIndexY = 3;
 		// マウスにおけるドラッグ判定
 		dPoint? dragPoint = null; //マウスの移動前座標
 		// コンストラクタ
@@ -241,6 +241,21 @@ namespace HeavyDamageCalculator {
 		// xをmin～maxの範囲に丸める
 		double MaxMin(double x, double min, double max) {
 			return (x < min ? min : x > max ? max : x);
+		}
+
+		private void ProbChart_KeyDown(object sender, KeyEventArgs e) {
+			if(e.Key == Key.Add) {
+				chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
+				ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+				chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
+				ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+			}
+			if(e.Key == Key.Subtract) {
+				chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
+				ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+				chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
+				ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+			}
 		}
 	}
 }
