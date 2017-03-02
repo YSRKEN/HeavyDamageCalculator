@@ -183,6 +183,10 @@ namespace HeavyDamageCalculator {
 			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
 			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 		}
+		// 交戦形態を考慮するかどうかを決める
+		private void BattleTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			this.Draw();
+		}
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
@@ -223,6 +227,9 @@ namespace HeavyDamageCalculator {
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
 			ProbChart.Legends.Clear();
+			// 交戦形態の選択に関する処理
+			if(BattleTypeComboBox.SelectedIndex <= 0)
+				return;
 			// グラフエリアの罫線色を設定する
 			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
 			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;

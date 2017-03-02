@@ -48,11 +48,17 @@
 				<Button Name="ParameterResetButton" Content="パラメータをリセット" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="ParameterResetButton_Click"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
-				<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="120" Margin="2.5,2.5,2.5,2.5" />
+				<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
 				<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphButton_Click"/>
 				<Button Name="ClearGraphButton" Content="グラフを消去" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="ClearGraphButton_Click"/>
 				<Button Name="FineIntervalButton" Content="罫線を細かく" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="FineIntervalButton_Click"/>
 				<Button Name="RoughIntervalButton" Content="罫線を荒く" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="RoughIntervalButton_Click"/>
+				<ComboBox x:Name="BattleTypeComboBox" SelectedIndex="0" Margin="2.5,2.5,2.5,2.5" Height="23" SelectionChanged="BattleTypeComboBox_SelectionChanged">
+					<ComboBoxItem Content="交戦形態"/>
+					<ComboBoxItem Content="考慮しない"/>
+					<ComboBoxItem Content="彩雲あり"/>
+					<ComboBoxItem Content="彩雲なし"/>
+				</ComboBox>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
 				<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="PicSaveButton_Click"/>
