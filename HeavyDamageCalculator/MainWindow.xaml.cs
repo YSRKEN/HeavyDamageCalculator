@@ -222,9 +222,6 @@ namespace HeavyDamageCalculator {
 			// グラフエリアを初期化する
 			ProbChart.Series.Clear();
 			ProbChart.Legends.Clear();
-			// 交戦形態の選択に関する処理
-			if(BattleTypeComboBox.SelectedIndex <= 0)
-				return;
 			// グラフエリアの罫線色を設定する
 			ProbChart.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.LightGray;
 			ProbChart.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.LightGray;
