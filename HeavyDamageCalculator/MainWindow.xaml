@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:HeavyDamageCalculator"
         xmlns:wfc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
         mc:Ignorable="d"
-        Title="HeavyDamageCalculator" Height="400" Width="500" MinHeight="400" MinWidth="500" SizeChanged="Window_SizeChanged">
+        Title="HeavyDamageCalculator" Height="400" Width="600" MinHeight="400" MinWidth="600" SizeChanged="Window_SizeChanged">
 	<Window.DataContext>
 		<local:MainWindowViewModel/>
 	</Window.DataContext>

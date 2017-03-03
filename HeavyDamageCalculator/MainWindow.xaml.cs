@@ -82,8 +82,8 @@ namespace HeavyDamageCalculator {
 			this.Close();
 		}
 		private void WindowSizeResetMenu_Click(object sender, RoutedEventArgs e) {
-			this.Width = 450;
-			this.Height = 350;
+			this.Width = 600;
+			this.Height = 400;
 		}
 		private void ParameterResetMenu_Click(object sender, RoutedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
