@@ -315,6 +315,7 @@ namespace HeavyDamageCalculator {
 		// グラフデータをgnuplot形式で書き出す
 		string MakeGnuplotData() {
 			var output = "";
+			bool lineFeedFlg = false;
 			// 現在のグラフデータ
 			if(PrimaryCheckMenu.IsChecked) {
 				output += $"#[{NowGraphName}]\n";
@@ -322,15 +323,19 @@ namespace HeavyDamageCalculator {
 				foreach(var point in plotData) {
 					output += $"{point.X} {point.Y}\n";
 				}
+				lineFeedFlg = true;
 			}
 			// ストックしてあるグラフデータ
 			if(graphParameterStock.Count >= 1) {
 				foreach(var graphParameter in graphParameterStock) {
-					output += $"\n\n#[{graphParameter.Name}]\n";
+					if(lineFeedFlg)
+						output += "\n\n";
+					output += $"#[{graphParameter.Name}]\n";
 					var plotData = CalculationLogic.CalcPlotData(graphParameter);
 					foreach(var point in plotData) {
 						output += $"{point.X} {point.Y}\n";
 					}
+					lineFeedFlg = true;
 				}
 			}
 			return output;
