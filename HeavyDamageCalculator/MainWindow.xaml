@@ -17,6 +17,32 @@
 		<DockPanel.LayoutTransform>
 			<ScaleTransform ScaleX="{Binding ScaleX}" ScaleY="{Binding ScaleY}"/>
 		</DockPanel.LayoutTransform>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="ファイル(_F)">
+				<MenuItem Header="グラフをコピー(_C)">
+					<MenuItem Header="png画像...(_P)"/>
+					<MenuItem Header="gnuplot形式...(_G)"/>
+				</MenuItem>
+				<MenuItem Header="グラフを保存(_S)">
+					<MenuItem Header="png画像...(_P)"/>
+					<MenuItem Header="gnuplot形式...(_G)"/>
+				</MenuItem>
+				<MenuItem Header="終了(_X)" />
+			</MenuItem>
+			<MenuItem Header="編集(_E)">
+				<MenuItem Header="ウィンドウサイズをリセット(_W)" />
+				<MenuItem Header="パラメーターをリセット(_P)" />
+				<MenuItem Header="グラフを追加(_A)" />
+				<MenuItem Header="グラフを消去(_D)" />
+			</MenuItem>
+			<MenuItem Header="オプション(_O)">
+				<MenuItem IsCheckable="True" Header="ナイーブな実装で計算" />
+				<MenuItem IsCheckable="True" Header="入力中のグラフを表示" IsChecked="True" />
+			</MenuItem>
+			<MenuItem Header="ヘルプ(_H)">
+				<MenuItem Header="バージョン情報(_A)" />
+			</MenuItem>
+		</Menu>
 		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,10,10,5">
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
