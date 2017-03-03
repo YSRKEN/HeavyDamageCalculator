@@ -93,6 +93,10 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		private void AddGraphMenu_Click(object sender, RoutedEventArgs e) {
+			if(NowGraphParameter.Name == "") {
+				MessageBox.Show("グラフ名を入力してください.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
 			graphParameterStock.Add(NowGraphParameter);
 		}
 		private void ClearGraphMenu_Click(object sender, RoutedEventArgs e) {
@@ -103,6 +107,8 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		private void PrimaryCheckMenu_Changed(object sender, RoutedEventArgs e) {
+			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
+				PrimaryCheckBox.IsChecked = PrimaryCheckMenu.IsChecked;
 			this.Draw();
 		}
 		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
@@ -131,6 +137,12 @@ namespace HeavyDamageCalculator {
 		#region 画面内のオブジェクトに関するイベント処理
 		// マウスの移動前座標
 		dPoint? dragPoint = null;
+		// 「入力中のグラフを表示」チェックボックスを操作した際の処理
+		private void PrimaryCheckBox_Changed(object sender, RoutedEventArgs e) {
+			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
+				PrimaryCheckMenu.IsChecked = (bool)PrimaryCheckBox.IsChecked;
+			PrimaryCheckMenu_Changed(sender, e);
+		}
 		// スライダーを動かした際の処理
 		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			this.Draw();

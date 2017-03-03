@@ -69,6 +69,8 @@
 		<StackPanel DockPanel.Dock="Top" Margin="5,5,5,5" Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
 				<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
+				<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click"/>
+				<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed"/>
 				<Button Name="FineIntervalButton" Content="罫線を細かく" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="FineIntervalButton_Click"/>
 				<Button Name="RoughIntervalButton" Content="罫線を荒く" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="RoughIntervalButton_Click"/>
 			</StackPanel>
