@@ -20,27 +20,27 @@
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="ファイル(_F)">
 				<MenuItem Header="グラフをコピー(_C)">
-					<MenuItem Header="png画像...(_P)"/>
-					<MenuItem Header="gnuplot形式...(_G)"/>
+					<MenuItem Name="CopyPicMenu" Header="png画像...(_P)" Click="CopyPicMenu_Click"/>
+					<MenuItem Name="CopyTextMenu" Header="gnuplot形式...(_G)" Click="CopyTextMenu_Click"/>
 				</MenuItem>
 				<MenuItem Header="グラフを保存(_S)">
-					<MenuItem Header="png画像...(_P)"/>
-					<MenuItem Header="gnuplot形式...(_G)"/>
+					<MenuItem Name="SavePicMenu" Header="png画像...(_P)" Click="SavePicMenu_Click"/>
+					<MenuItem Name="SaveTextMenu" Header="gnuplot形式...(_G)" Click="SaveTextMenu_Click"/>
 				</MenuItem>
-				<MenuItem Header="終了(_X)" />
+				<MenuItem Name="ExitMenu" Header="終了(_X)" Click="ExitMenu_Click" />
 			</MenuItem>
 			<MenuItem Header="編集(_E)">
-				<MenuItem Header="ウィンドウサイズをリセット(_W)" />
-				<MenuItem Header="パラメーターをリセット(_P)" />
-				<MenuItem Header="グラフを追加(_A)" />
-				<MenuItem Header="グラフを消去(_D)" />
+				<MenuItem Name="WindowSizeResetMenu" Header="ウィンドウサイズをリセット(_W)" Click="WindowSizeResetMenu_Click" />
+				<MenuItem Name="ParameterResetMenu" Header="パラメーターをリセット(_P)" Click="ParameterResetMenu_Click" />
+				<MenuItem Name="AddGraphMenu" Header="グラフを追加(_A)" Click="AddGraphMenu_Click" />
+				<MenuItem Name="ClearGraphMenu" Header="グラフを消去(_D)" Click="ClearGraphMenu_Click" />
 			</MenuItem>
 			<MenuItem Header="オプション(_O)">
-				<MenuItem IsCheckable="True" Header="ナイーブな実装で計算" />
-				<MenuItem IsCheckable="True" Header="入力中のグラフを表示" IsChecked="True" />
+				<MenuItem Name="NaiveCheckMenu" IsCheckable="True" Header="ナイーブな実装で計算" Checked="NaiveCheckMenu_Changed" Unchecked="NaiveCheckMenu_Changed" />
+				<MenuItem Name="PrimaryCheckMenu" IsCheckable="True" Header="入力中のグラフを表示" IsChecked="True" Checked="PrimaryCheckMenu_Changed" Unchecked="PrimaryCheckMenu_Changed" />
 			</MenuItem>
 			<MenuItem Header="ヘルプ(_H)">
-				<MenuItem Header="バージョン情報(_A)" />
+				<MenuItem Name="AboutMenu" Header="バージョン情報(_A)" Click="AboutMenu_Click" />
 			</MenuItem>
 		</Menu>
 		<UniformGrid DockPanel.Dock="Top" Rows="1" Margin="10,10,10,5">
@@ -68,21 +68,9 @@
 		</UniformGrid>
 		<StackPanel DockPanel.Dock="Top" Margin="5,5,5,5" Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
-				<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" HorizontalAlignment="Center"/>
-				<CheckBox Name="PrimaryCheckBox" Content="入力データを表示" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" IsChecked="True" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" HorizontalAlignment="Center"/>
-				<Button Name="WindowSizeResetButton" Content="ウィンドウサイズをリセット" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="WindowSizeResetButton_Click"/>
-				<Button Name="ParameterResetButton" Content="パラメータをリセット" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="ParameterResetButton_Click"/>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
 				<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
-				<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphButton_Click"/>
-				<Button Name="ClearGraphButton" Content="グラフを消去" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="ClearGraphButton_Click"/>
 				<Button Name="FineIntervalButton" Content="罫線を細かく" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="FineIntervalButton_Click"/>
 				<Button Name="RoughIntervalButton" Content="罫線を荒く" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="RoughIntervalButton_Click"/>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
-				<Button Name="PicSaveButton" Content="グラフの画像を保存" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="PicSaveButton_Click"/>
-				<Button Name="CopyGnuplotButton" Content="グラフをgnuplot形式でコピー" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="CopyGnuplotButton_Click"/>
 			</StackPanel>
 		</StackPanel>
 		<WindowsFormsHost Margin="10,5,10,10">

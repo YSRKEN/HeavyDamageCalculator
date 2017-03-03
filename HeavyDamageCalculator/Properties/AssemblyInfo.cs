@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("HeavyDamageCalculator")]
+[assembly: AssemblyProduct("Special Thanks : avaris")]
 [assembly: AssemblyCopyright("Copyright © 2017 YSR")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

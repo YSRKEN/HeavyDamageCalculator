@@ -30,46 +30,24 @@ namespace HeavyDamageCalculator {
 			base.OnSourceInitialized(e);
 			this.Draw();
 		}
-		#region 画面内のオブジェクトに関するイベント処理
-		// マウスの移動前座標
-		dPoint? dragPoint = null;
-		// スライダーを動かした際の処理
-		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			this.Draw();
+		#region メニュー処理
+		private void CopyPicMenu_Click(object sender, RoutedEventArgs e) {
+			var stream = new System.IO.MemoryStream();
+			ProbChart.SaveImage(stream, System.Drawing.Imaging.ImageFormat.Bmp);
+			var bmp = new Bitmap(stream);
+			Clipboard.SetDataObject(bmp);
 		}
-		// チェックボックスを切り替えた際の処理
-		private void NaiveCheckBox_Changed(object sender, RoutedEventArgs e) {
-			this.Draw();
+		private void CopyTextMenu_Click(object sender, RoutedEventArgs e) {
+			// テキストを作成する
+			var output = MakeGnuplotData();
+			// コピーする
+			try {
+				Clipboard.SetText(output);
+			} catch(Exception) {
+				MessageBox.Show("データのコピーに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+			}
 		}
-		private void PrimaryCheckBox_Changed(object sender, RoutedEventArgs e) {
-			this.Draw();
-		}
-		// グラフを追加する
-		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
-			var bindData = this.DataContext as MainWindowViewModel;
-			var graphParameter = new GraphParameter(bindData.ParameterName, bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
-			graphParameterStock.Add(graphParameter);
-		}
-		// グラフを削除する
-		private void ClearGraphButton_Click(object sender, RoutedEventArgs e) {
-			graphParameterStock = new List<GraphParameter>();
-			this.Draw();
-		}
-		// ウィンドウサイズをリセットする
-		private void WindowSizeResetButton_Click(object sender, RoutedEventArgs e) {
-			this.Width = 450;
-			this.Height = 350;
-		}
-		// パラメーターをリセットする
-		private void ParameterResetButton_Click(object sender, RoutedEventArgs e) {
-			var bindData = this.DataContext as MainWindowViewModel;
-			bindData.MaxHpValue = 35;
-			bindData.NowHpValue = 35;
-			bindData.ArmorValue = 49;
-			this.Draw();
-		}
-		// グラフの画像を保存する
-		private void PicSaveButton_Click(object sender, RoutedEventArgs e) {
+		private void SavePicMenu_Click(object sender, RoutedEventArgs e) {
 			var sfd = new SaveFileDialog();
 			sfd.FileName = "prob.png";
 			sfd.Filter = "PNGファイル(*.png)|*.png|すべてのファイル(*.*)|*.*";
@@ -82,31 +60,80 @@ namespace HeavyDamageCalculator {
 				}
 			}
 		}
-		// gnuplot形式でコピーする
-		private void CopyGnuplotButton_Click(object sender, RoutedEventArgs e) {
+		private void SaveTextMenu_Click(object sender, RoutedEventArgs e) {
 			// テキストを作成する
-			var output = "";
-			if((bool)PrimaryCheckBox.IsChecked) {
-				output += $"#[{ParameterKey}]\n";
-				foreach(var point in ParameterValue) {
-					output += $"{point.X} {point.Y}\n";
+			var output = MakeGnuplotData();
+			// 保存する
+			var sfd = new SaveFileDialog();
+			sfd.FileName = "plot.txt";
+			sfd.Filter = "テキストファイル(*.txt)|*.txt|すべてのファイル(*.*)|*.*";
+			sfd.AddExtension = true;
+			if((bool)sfd.ShowDialog()) {
+				try {
+					using(var stream = sfd.OpenFile())
+					using(var sw = new System.IO.StreamWriter(stream))
+						sw.Write(output);
+				} catch(Exception) {
+					MessageBox.Show("テキストの保存に失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 			}
-			if(graphParameterStock.Count >= 1) {
-				foreach(var graphParameter in graphParameterStock) {
-					output += $"\n\n#[{graphParameter.Name}]\n";
-					var plotData = CalculationLogic.CalcPlotData(graphParameter.MaxHp, graphParameter.Armor, graphParameter.NowHp, graphParameter.NaiveFlg);
-					foreach(var point in plotData) {
-						output += $"{point.X} {point.Y}\n";
-					}
-				}
-			}
-			// コピーする
-			try {
-				Clipboard.SetText(output);
-			} catch(Exception) {
-				MessageBox.Show("データのコピーに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
-			}
+		}
+		private void ExitMenu_Click(object sender, RoutedEventArgs e) {
+			this.Close();
+		}
+		private void WindowSizeResetMenu_Click(object sender, RoutedEventArgs e) {
+			this.Width = 450;
+			this.Height = 350;
+		}
+		private void ParameterResetMenu_Click(object sender, RoutedEventArgs e) {
+			var bindData = this.DataContext as MainWindowViewModel;
+			bindData.MaxHpValue = 35;
+			bindData.NowHpValue = 35;
+			bindData.ArmorValue = 49;
+			this.Draw();
+		}
+		private void AddGraphMenu_Click(object sender, RoutedEventArgs e) {
+			graphParameterStock.Add(NowGraphParameter);
+		}
+		private void ClearGraphMenu_Click(object sender, RoutedEventArgs e) {
+			graphParameterStock = new List<GraphParameter>();
+			this.Draw();
+		}
+		private void NaiveCheckMenu_Changed(object sender, RoutedEventArgs e) {
+			this.Draw();
+		}
+		private void PrimaryCheckMenu_Changed(object sender, RoutedEventArgs e) {
+			this.Draw();
+		}
+		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
+			// 自分自身のバージョン情報を取得する
+			// (http://dobon.net/vb/dotnet/file/myversioninfo.html)
+			// AssemblyTitle
+			var asmttl = ((System.Reflection.AssemblyTitleAttribute)
+				Attribute.GetCustomAttribute(
+				System.Reflection.Assembly.GetExecutingAssembly(),
+				typeof(System.Reflection.AssemblyTitleAttribute))).Title;
+			// AssemblyCopyright
+			var asmcpy = ((System.Reflection.AssemblyCopyrightAttribute)
+				Attribute.GetCustomAttribute(
+				System.Reflection.Assembly.GetExecutingAssembly(),
+				typeof(System.Reflection.AssemblyCopyrightAttribute))).Copyright;
+			// AssemblyProduct
+			var asmprd = ((System.Reflection.AssemblyProductAttribute)
+				Attribute.GetCustomAttribute(
+				System.Reflection.Assembly.GetExecutingAssembly(),
+				typeof(System.Reflection.AssemblyProductAttribute))).Product;
+			// AssemblyVersion
+			var asmver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			MessageBox.Show(asmttl + " Ver." + asmver + "\n" + asmcpy + "\n" + asmprd);
+		}
+		#endregion
+		#region 画面内のオブジェクトに関するイベント処理
+		// マウスの移動前座標
+		dPoint? dragPoint = null;
+		// スライダーを動かした際の処理
+		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			this.Draw();
 		}
 		// ProbChart内でドラッグを開始した際の処理
 		private void ProbChart_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e) {
@@ -178,10 +205,6 @@ namespace HeavyDamageCalculator {
 			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
 			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 		}
-		// 交戦形態を考慮するかどうかを決める
-		private void BattleTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			this.Draw();
-		}
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
@@ -201,17 +224,17 @@ namespace HeavyDamageCalculator {
 		int chartScaleIntervalIndexX = 2;
 		int chartScaleIntervalIndexY = 2;
 		// 現在のグラフ名を返すプロパティ
-		string ParameterKey {
+		string NowGraphName {
 			get {
 				var bindData = this.DataContext as MainWindowViewModel;
-				return $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{((bool)NaiveCheckBox.IsChecked ? "☆" : "")}";
+				return $"{bindData.MaxHpValue},{bindData.ArmorValue},{bindData.NowHpValue}{(NaiveCheckMenu.IsChecked ? "☆" : "")}";
 			}
 		}
-		// 現在のグラフデータを返すプロパティ
-		List<Point> ParameterValue {
+		// 現在のグラフパラメーターを返すプロパティ
+		GraphParameter NowGraphParameter {
 			get {
 				var bindData = this.DataContext as MainWindowViewModel;
-				return CalculationLogic.CalcPlotData(bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
+				return new GraphParameter(bindData.ParameterName, bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, NaiveCheckMenu.IsChecked);
 			}
 		}
 		// グラフをプロットする
@@ -229,12 +252,13 @@ namespace HeavyDamageCalculator {
 			var minAxisX = double.MaxValue;
 			var maxAxisX = double.Epsilon;
 			var maxAxisY = double.Epsilon;
-			if((bool)PrimaryCheckBox.IsChecked) {
+			if(PrimaryCheckMenu.IsChecked) {
 				var series = new Series();
-				series.Name = this.ParameterKey;
+				series.Name = NowGraphName;
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
-				foreach(var point in this.ParameterValue) {
+				var plotData = CalculationLogic.CalcPlotData(NowGraphParameter);
+				foreach(var point in plotData) {
 					series.Points.AddXY(point.X, point.Y * 100);
 					minAxisX = Math.Min(minAxisX, point.X);
 					maxAxisX = Math.Max(maxAxisX, point.X);
@@ -253,7 +277,8 @@ namespace HeavyDamageCalculator {
 				series.Name = graphParameter.Name;
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
-				foreach(var point in CalculationLogic.CalcPlotData(graphParameter)) {
+				var plotData = CalculationLogic.CalcPlotData(graphParameter);
+				foreach(var point in plotData) {
 					series.Points.AddXY(point.X, point.Y * 100);
 					minAxisX = Math.Min(minAxisX, point.X);
 					maxAxisX = Math.Max(maxAxisX, point.X);
@@ -281,6 +306,29 @@ namespace HeavyDamageCalculator {
 				axisY.Maximum = MaxMin(temp, 0.0, 100.0);
 				axisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 			}
+		}
+		// グラフデータをgnuplot形式で書き出す
+		string MakeGnuplotData() {
+			var output = "";
+			// 現在のグラフデータ
+			if(PrimaryCheckMenu.IsChecked) {
+				output += $"#[{NowGraphName}]\n";
+				var plotData = CalculationLogic.CalcPlotData(NowGraphParameter);
+				foreach(var point in plotData) {
+					output += $"{point.X} {point.Y}\n";
+				}
+			}
+			// ストックしてあるグラフデータ
+			if(graphParameterStock.Count >= 1) {
+				foreach(var graphParameter in graphParameterStock) {
+					output += $"\n\n#[{graphParameter.Name}]\n";
+					var plotData = CalculationLogic.CalcPlotData(graphParameter);
+					foreach(var point in plotData) {
+						output += $"{point.X} {point.Y}\n";
+					}
+				}
+			}
+			return output;
 		}
 		#endregion
 		#region ユーティリティ
