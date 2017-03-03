@@ -49,38 +49,48 @@
 					<TextBlock Text="最大耐久：" FontSize="18"/>
 					<TextBlock Name="MaxHpTextBlock" Text="{Binding Value, ElementName=MaxHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
 				</StackPanel>
-				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200" Value="{Binding MaxHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
+				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200" Value="{Binding MaxHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="装甲：" FontSize="18"/>
 					<TextBlock Name="ArmorTextBlock" Text="{Binding Value, ElementName=ArmorSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
 				</StackPanel>
-				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="{Binding ArmorValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
+				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="{Binding ArmorValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="現在耐久：" FontSize="18"/>
 					<TextBlock Name="NowHpTextBlock" Text="{Binding Value, ElementName=NowHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
 				</StackPanel>
-				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="Slider_ValueChanged"/>
+				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
 			</StackPanel>
 		</UniformGrid>
-		<StackPanel DockPanel.Dock="Top" Margin="5,5,5,5" Orientation="Vertical">
-			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
-				<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
-				<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click"/>
-				<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed"/>
-				<Button Name="FineIntervalButton" Content="罫線を細かく" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="FineIntervalButton_Click"/>
-				<Button Name="RoughIntervalButton" Content="罫線を荒く" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="RoughIntervalButton_Click"/>
-			</StackPanel>
+		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,5,10,5">
+			<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
+			<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click"/>
+			<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed"/>
 		</StackPanel>
-		<WindowsFormsHost Margin="10,5,10,10">
-			<wfc:Chart x:Name="ProbChart" MouseDown="ProbChart_MouseDown" MouseUp="ProbChart_MouseUp" MouseMove="ProbChart_MouseMove">
-				<wfc:Chart.ChartAreas>
-					<wfc:ChartArea Name="ChartArea"/>
-				</wfc:Chart.ChartAreas>
-			</wfc:Chart>
-		</WindowsFormsHost>
+		<Grid DockPanel.Dock="Bottom" Margin="10,5,10,10">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition />
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<WindowsFormsHost Grid.RowSpan="3" Margin="0,0,10,0">
+				<wfc:Chart x:Name="ProbChart" MouseDown="ProbChart_MouseDown" MouseUp="ProbChart_MouseUp" MouseMove="ProbChart_MouseMove">
+					<wfc:Chart.ChartAreas>
+						<wfc:ChartArea Name="ChartArea"/>
+					</wfc:Chart.ChartAreas>
+				</wfc:Chart>
+			</WindowsFormsHost>
+			<TextBlock Text="荒" Grid.Row="0" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" IsDirectionReversed="True" ValueChanged="ChartIntervalSlider_ValueChanged" />
+			<TextBlock Text="細" Grid.Row="2" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+		</Grid>
 	</DockPanel>
 </Window>

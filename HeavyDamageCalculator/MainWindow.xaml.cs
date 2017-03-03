@@ -143,8 +143,8 @@ namespace HeavyDamageCalculator {
 				PrimaryCheckMenu.IsChecked = (bool)PrimaryCheckBox.IsChecked;
 			PrimaryCheckMenu_Changed(sender, e);
 		}
-		// スライダーを動かした際の処理
-		private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+		// パラメーター用スライダーを動かした際の処理
+		private void ParameterSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			this.Draw();
 		}
 		// ProbChart内でドラッグを開始した際の処理
@@ -203,18 +203,11 @@ namespace HeavyDamageCalculator {
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
-		// 罫線を細かくする
-		private void FineIntervalButton_Click(object sender, RoutedEventArgs e) {
-			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX - 1, 0, 3);
+		// 罫線用スライダーを動かした際の処理
+		private void ChartIntervalSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			chartScaleIntervalIndexX = (int)Math.Round(ChartIntervalSlider.Value);
 			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY - 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
-		}
-		// 罫線を荒くする
-		private void RoughIntervalButton_Click(object sender, RoutedEventArgs e) {
-			chartScaleIntervalIndexX = (int)MaxMin(chartScaleIntervalIndexX + 1, 0, 3);
-			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
-			chartScaleIntervalIndexY = (int)MaxMin(chartScaleIntervalIndexY + 1, 0, 3);
+			chartScaleIntervalIndexY = (int)Math.Round(ChartIntervalSlider.Value);
 			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
 		}
 		// ウィンドウのサイズが変化する
