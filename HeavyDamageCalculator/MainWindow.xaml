@@ -47,29 +47,29 @@
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="最大耐久：" FontSize="18"/>
-					<TextBox Name="MaxHpTextBox" Width="40" Text="{Binding Value, ElementName=MaxHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+					<TextBox Name="MaxHpTextBox" Width="40" Text="{Binding Value, ElementName=MaxHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18" TabIndex="0"/>
 				</StackPanel>
-				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200" Value="{Binding MaxHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
+				<Slider Name="MaxHpSlider" Minimum="1" Maximum="200" Value="{Binding MaxHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged" TabIndex="3"/>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="装甲：" FontSize="18"/>
-					<TextBox Name="ArmorTextBox" Width="40" Text="{Binding Value, ElementName=ArmorSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+					<TextBox Name="ArmorTextBox" Width="40" Text="{Binding Value, ElementName=ArmorSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18" TabIndex="1"/>
 				</StackPanel>
-				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="{Binding ArmorValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
+				<Slider Name="ArmorSlider" Minimum="0" Maximum="200" Value="{Binding ArmorValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged" TabIndex="4"/>
 			</StackPanel>
 			<StackPanel Orientation="Vertical" Margin="5,0,5,0">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="現在耐久：" FontSize="18"/>
-					<TextBox Name="NowHpTextBox" Width="40" Text="{Binding Value, ElementName=NowHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18"/>
+					<TextBox Name="NowHpTextBox" Width="40" Text="{Binding Value, ElementName=NowHpSlider, Converter={StaticResource DoubleToIntConverter}}" FontSize="18" TabIndex="2"/>
 				</StackPanel>
-				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged"/>
+				<Slider Name="NowHpSlider" Minimum="1" Maximum="200" Value="{Binding NowHpValue}" SmallChange="1" IsMoveToPointEnabled="True" ValueChanged="ParameterSlider_ValueChanged" TabIndex="5"/>
 			</StackPanel>
 		</UniformGrid>
 		<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10,5,10,5">
-			<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" />
-			<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click"/>
-			<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed"/>
+			<TextBox Name="ParameterNameTextBox" Text ="{Binding ParameterName}" MinWidth="100" Margin="2.5,2.5,2.5,2.5" TabIndex="6" />
+			<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click" TabIndex="7"/>
+			<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" TabIndex="8"/>
 		</StackPanel>
 		<Grid DockPanel.Dock="Bottom" Margin="10,5,10,10">
 			<Grid.RowDefinitions>
@@ -89,7 +89,7 @@
 				</wfc:Chart>
 			</WindowsFormsHost>
 			<TextBlock Text="荒" Grid.Row="0" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" IsDirectionReversed="True" ValueChanged="ChartIntervalSlider_ValueChanged" />
+			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" IsDirectionReversed="True" ValueChanged="ChartIntervalSlider_ValueChanged" TabIndex="9" />
 			<TextBlock Text="細" Grid.Row="2" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Grid>
 	</DockPanel>
