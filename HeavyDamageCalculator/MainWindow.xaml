@@ -43,7 +43,7 @@
 		<StackPanel DockPanel.Dock="Top" Margin="5,5,5,5" Orientation="Vertical">
 			<StackPanel Orientation="Horizontal" Margin="2.5,2.5,2.5,2.5">
 				<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" HorizontalAlignment="Center"/>
-				<CheckBox Name="PrimaryCheckBox" Content="入力データを非表示" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" IsChecked="True" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" HorizontalAlignment="Center"/>
+				<CheckBox Name="PrimaryCheckBox" Content="入力データを表示" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" IsChecked="True" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" HorizontalAlignment="Center"/>
 				<Button Name="WindowSizeResetButton" Content="ウィンドウサイズをリセット" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="WindowSizeResetButton_Click"/>
 				<Button Name="ParameterResetButton" Content="パラメータをリセット" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="ParameterResetButton_Click"/>
 			</StackPanel>
