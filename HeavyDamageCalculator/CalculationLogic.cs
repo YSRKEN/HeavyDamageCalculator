@@ -12,6 +12,21 @@ namespace HeavyDamageCalculator {
 		public double X { get; set; }
 		public double Y { get; set; }
 	}
+	// グラフデータを管理するための構造体
+	class GraphParameter {
+		public string Name;
+		public int MaxHp;
+		public int Armor;
+		public int NowHp;
+		public bool NaiveFlg;
+		public GraphParameter(string name, int maxHp, int armor, int nowHp, bool naiveFlg) {
+			Name = name;
+			MaxHp = maxHp;
+			Armor = armor;
+			NowHp = nowHp;
+			NaiveFlg = naiveFlg;
+		}
+	}
 	/// <summary>
 	/// 大破率計算ロジック
 	/// </summary>
@@ -41,6 +56,9 @@ namespace HeavyDamageCalculator {
 			} else {
 				return CalcPlotDataOriginal(maxHp, armor, nowHp);
 			}
+		}
+		public static List<Point> CalcPlotData(GraphParameter g) {
+			return CalcPlotData(g.MaxHp, g.Armor, g.NowHp, g.NaiveFlg);
 		}
 		/// <summary>
 		/// プロット用データを用意する(オリジナル版)

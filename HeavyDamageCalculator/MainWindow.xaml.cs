@@ -46,19 +46,13 @@ namespace HeavyDamageCalculator {
 		}
 		// グラフを追加する
 		private void AddGraphButton_Click(object sender, RoutedEventArgs e) {
-			// Keyを生成する
 			var bindData = this.DataContext as MainWindowViewModel;
-			var key = bindData.ParameterName;
-			// Valueを生成する
-			var value = this.ParameterValue;
-			if(value.Count <= 0)
-				return;
-			// plotDataStockに追加する
-			plotDataStock[key] = value;
+			var graphParameter = new GraphParameter(bindData.ParameterName, bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, (bool)NaiveCheckBox.IsChecked);
+			graphParameterStock.Add(graphParameter);
 		}
 		// グラフを削除する
 		private void ClearGraphButton_Click(object sender, RoutedEventArgs e) {
-			plotDataStock = new Dictionary<string, List<Point>>();
+			graphParameterStock = new List<GraphParameter>();
 			this.Draw();
 		}
 		// ウィンドウサイズをリセットする
@@ -93,15 +87,16 @@ namespace HeavyDamageCalculator {
 			// テキストを作成する
 			var output = "";
 			if((bool)PrimaryCheckBox.IsChecked) {
-				output += $"[{ParameterKey}]\n";
+				output += $"#[{ParameterKey}]\n";
 				foreach(var point in ParameterValue) {
 					output += $"{point.X} {point.Y}\n";
 				}
 			}
-			if(plotDataStock.Count >= 1) {
-				foreach(var pair in plotDataStock) {
-					output += $"[{pair.Key}]\n";
-					foreach(var point in pair.Value) {
+			if(graphParameterStock.Count >= 1) {
+				foreach(var graphParameter in graphParameterStock) {
+					output += $"\n\n#[{graphParameter.Name}]\n";
+					var plotData = CalculationLogic.CalcPlotData(graphParameter.MaxHp, graphParameter.Armor, graphParameter.NowHp, graphParameter.NaiveFlg);
+					foreach(var point in plotData) {
 						output += $"{point.X} {point.Y}\n";
 					}
 				}
@@ -198,8 +193,8 @@ namespace HeavyDamageCalculator {
 		}
 		#endregion
 		#region グラフ描画に関するプロパティ・メソッド
-		// 複数グラフを管理するためのDictionary
-		Dictionary<string, List<Point>> plotDataStock = new Dictionary<string, List<Point>>();
+		// 複数グラフを管理するためのList
+		List<GraphParameter> graphParameterStock = new List<GraphParameter>();
 		// グラフのスケール
 		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
 		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
@@ -256,12 +251,12 @@ namespace HeavyDamageCalculator {
 			}
 			var bindData = DataContext as MainWindowViewModel;
 			// グラフエリアにストックしたグラフを追加する
-			foreach(var pair in plotDataStock) {
+			foreach(var graphParameter in graphParameterStock) {
 				var series = new Series();
-				series.Name = pair.Key;
+				series.Name = graphParameter.Name;
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
-				foreach(var point in pair.Value) {
+				foreach(var point in CalculationLogic.CalcPlotData(graphParameter)) {
 					series.Points.AddXY(point.X, point.Y * 100);
 					minAxisX = Math.Min(minAxisX, point.X);
 					maxAxisX = Math.Max(maxAxisX, point.X);
