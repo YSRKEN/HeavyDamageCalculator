@@ -84,9 +84,9 @@ namespace HeavyDamageCalculator {
 			var power = new double[]{
 				-armorRange,
 				armorMin,
-				armorMin + (nowHp > heavyDamageHp + 1 ? nowHp - heavyDamageHp - 1 : 0),
-				armorMin + nowHp - 1,
-				armorMax + nowHp - 1,
+				armorMin + (nowHp > heavyDamageHp + 1 ? nowHp - heavyDamageHp : 0),
+				armorMin + nowHp,
+				armorMax + nowHp,
 			};
 			/// 各種領域の確率
 			/// area_prob[0] : カスダメ時の大破率
