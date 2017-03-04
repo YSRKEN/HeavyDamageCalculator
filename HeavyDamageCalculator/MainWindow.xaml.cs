@@ -183,7 +183,7 @@ namespace HeavyDamageCalculator {
 			var chartOffsetX = chartScaleX * pixelOffsetX / pixelSizeX;
 			// X軸方向の移動を検知したら、それだけを行うようにする
 			if(Math.Abs(chartOffsetX) < chartScaleIntervalX[chartScaleIntervalIndexX])
-				return;			
+				return;
 			// グラフのマス目の分だけ移動距離を丸める
 			chartOffsetX = (int)SpecialRound(chartOffsetX, chartScaleIntervalX[chartScaleIntervalIndexX]);
 			// 移動させて「範囲」から外れないかを判定しつつ動かす

@@ -207,8 +207,8 @@ namespace HeavyDamageCalculator {
 			// 轟沈ストッパー時の大破率
 			var stopperProb = calcStopperDamageProb(nowHp, heavyDamageHp);
 			// 最終攻撃力がmaxVeryLightPowerの場合から順に計算していく
-			for(int x = maxVeryLightPower; x <= minStopperPower; ++x) {
-				double heavyDamagePer = 0.0;
+			for(double x = maxVeryLightPower; x <= minStopperPower; x += 0.1) {
+					double heavyDamagePer = 0.0;
 				// 装甲乱数
 				for(int ai = 0; ai < armor; ++ai) {
 					double armor_rand = 0.7 * armor + 0.6 * ai;
@@ -230,7 +230,7 @@ namespace HeavyDamageCalculator {
 					}
 				}
 				// データ追加
-				output.Add(new Point { X = (double)x, Y = heavyDamagePer });
+				output.Add(new Point { X = x, Y = heavyDamagePer });
 			}
 			return output;
 		}
