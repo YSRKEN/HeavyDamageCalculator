@@ -89,7 +89,7 @@
 				</wfc:Chart>
 			</WindowsFormsHost>
 			<TextBlock Text="荒" Grid.Row="0" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" IsDirectionReversed="True" ValueChanged="ChartIntervalSlider_ValueChanged" TabIndex="9" />
+			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" ValueChanged="ChartIntervalSlider_ValueChanged" TabIndex="9" />
 			<TextBlock Text="細" Grid.Row="2" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Grid>
 	</DockPanel>
