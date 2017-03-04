@@ -169,23 +169,23 @@ namespace HeavyDamageCalculator {
 				return;
 			// diff_Xはドラッグ時の移動距離
 			var diffWigth = dragPoint.Value.X - e.Location.X;
-			var diffHeight = e.Location.Y - dragPoint.Value.Y;
+			//var diffHeight = e.Location.Y - dragPoint.Value.Y;
 			// 移動距離をグラフ座標に変換する
 			var chartWidth = ProbChart.Width;
-			var chartHeight = ProbChart.Height;
+			//var chartHeight = ProbChart.Height;
 			var chartArea = ProbChart.ChartAreas[0];
 			var chartScaleX = chartArea.AxisX.Maximum - chartArea.AxisX.Minimum;
-			var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
+			//var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
 			var diffScaleX = chartScaleX * diffWigth / chartWidth;
-			var diffScaleY = chartScaleY * diffHeight / chartHeight;
+			//var diffScaleY = chartScaleY * diffHeight / chartHeight;
 			//Console.WriteLine($"check {diffScaleX},${diffScaleY}");
 			// 移動距離が、グラフのマス目より小さい場合はまだ動かさない
 			if(Math.Abs(diffScaleX) < chartScaleIntervalX[chartScaleIntervalIndexX]
-			&& Math.Abs(diffScaleY) < chartScaleIntervalY[chartScaleIntervalIndexY])
+			/*&& Math.Abs(diffScaleY) < chartScaleIntervalY[chartScaleIntervalIndexY]*/)
 				return;
 			// グラフのマス目の分だけ移動距離を丸める
-			diffScaleX = (int)SpecialFloor(diffScaleX, chartScaleIntervalX[chartScaleIntervalIndexX]);
-			diffScaleY = (int)SpecialFloor(diffScaleY, chartScaleIntervalY[chartScaleIntervalIndexY]);
+			diffScaleX = (int)SpecialRound(diffScaleX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+			//diffScaleY = (int)SpecialFloor(diffScaleY, chartScaleIntervalY[chartScaleIntervalIndexY]);
 			//Console.WriteLine($"move {diffScaleX},${diffScaleY}");
 			// 移動させて「範囲」から外れないかを判定しつつ動かす
 			var xmin = chartArea.AxisX.Minimum + diffScaleX;
@@ -196,7 +196,7 @@ namespace HeavyDamageCalculator {
 			}
 			chartArea.AxisX.Minimum = xmin;
 			chartArea.AxisX.Maximum = xmax;
-			var ymin = chartArea.AxisY.Minimum + diffScaleY;
+			/*var ymin = chartArea.AxisY.Minimum + diffScaleY;
 			var ymax = chartArea.AxisY.Maximum + diffScaleY;
 			if(ymin < 0) {
 				ymax += -ymin;
@@ -207,7 +207,7 @@ namespace HeavyDamageCalculator {
 				ymax = 100;
 			}
 			chartArea.AxisY.Minimum = ymin;
-			chartArea.AxisY.Maximum = ymax;
+			chartArea.AxisY.Maximum = ymax;*/
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
@@ -358,6 +358,10 @@ namespace HeavyDamageCalculator {
 		// xをstepの定数倍になるように切り上げる
 		double SpecialCeiling(double x, double step) {
 			return Math.Ceiling(x / step) * step;
+		}
+		// xをstepの定数倍になるように丸める
+		double SpecialRound(double x, double step) {
+			return Math.Round(x / step) * step;
 		}
 		// xをmin～maxの範囲に丸める
 		double MaxMin(double x, double min, double max) {
