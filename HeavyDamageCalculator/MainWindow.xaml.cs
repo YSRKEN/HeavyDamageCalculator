@@ -104,6 +104,8 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		private void NaiveCheckMenu_Changed(object sender, RoutedEventArgs e) {
+			if(NaiveCheckBox != null && NaiveCheckMenu != null)
+				NaiveCheckBox.IsChecked = NaiveCheckMenu.IsChecked;
 			this.Draw();
 		}
 		private void PrimaryCheckMenu_Changed(object sender, RoutedEventArgs e) {
@@ -142,6 +144,12 @@ namespace HeavyDamageCalculator {
 			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
 				PrimaryCheckMenu.IsChecked = (bool)PrimaryCheckBox.IsChecked;
 			PrimaryCheckMenu_Changed(sender, e);
+		}
+		// 「ナイーブな実装で計算」チェックボックスを操作した際の処理
+		private void NaiveCheckBox_Changed(object sender, RoutedEventArgs e) {
+			if(NaiveCheckBox != null && NaiveCheckMenu != null)
+				NaiveCheckMenu.IsChecked = (bool)NaiveCheckBox.IsChecked;
+			NaiveCheckMenu_Changed(sender, e);
 		}
 		// パラメーター用スライダーを動かした際の処理
 		private void ParameterSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
