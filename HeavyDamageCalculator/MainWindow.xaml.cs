@@ -213,11 +213,12 @@ namespace HeavyDamageCalculator {
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
-			var scale = (this.Width / this.MinWidth + this.Height / this.MinHeight) / 2;
+			//var scale = (this.Width / this.MinWidth + this.Height / this.MinHeight) / 2;
+			var scale = Math.Min(this.Width / this.MinWidth, this.Height / this.MinHeight);
 			bindData.ScaleX = scale;
 			bindData.ScaleY = scale;
-			this.Width = this.MinWidth * scale;
-			this.Height = this.MinHeight * scale;
+			/*this.Width = this.MinWidth * scale;
+			this.Height = this.MinHeight * scale;*/
 		}
 		#endregion
 		#region グラフ描画に関するプロパティ・メソッド
