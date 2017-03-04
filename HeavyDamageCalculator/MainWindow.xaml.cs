@@ -225,7 +225,7 @@ namespace HeavyDamageCalculator {
 		List<GraphParameter> graphParameterStock = new List<GraphParameter>();
 		// グラフのスケール
 		int[] chartScaleIntervalX = { 1, 2, 5, 10 };
-		int[] chartScaleIntervalY = { 1, 2, 5, 10 };
+		int[] chartScaleIntervalY = { 5, 5, 5, 10 };
 		int chartScaleIntervalIndexX = 2;
 		int chartScaleIntervalIndexY = 2;
 		// 現在のグラフ名を返すプロパティ
