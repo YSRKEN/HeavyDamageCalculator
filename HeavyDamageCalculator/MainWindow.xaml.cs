@@ -92,6 +92,12 @@ namespace HeavyDamageCalculator {
 			bindData.ArmorValue = 49;
 			this.Draw();
 		}
+		private void IntervalResetMenu_Click(object sender, RoutedEventArgs e) {
+			ChartIntervalSlider.Value = 2;
+		}
+		private void ScaleResetMenu_Click(object sender, RoutedEventArgs e) {
+			ChartScaleSlider.Value = 1.0;
+		}
 		private void AddGraphMenu_Click(object sender, RoutedEventArgs e) {
 			if(NowGraphParameter.Name == "") {
 				MessageBox.Show("グラフ名を入力してください.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -297,8 +303,8 @@ namespace HeavyDamageCalculator {
 				var maximum = maxAxisX;
 				var center = (maximum + minimum) / 2;
 				var halfRange = maximum - center;
-				axisX.Minimum = SpecialFloor(center - halfRange * ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
-				axisX.Maximum = SpecialCeiling(center + halfRange * ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				axisX.Minimum = Math.Max(SpecialFloor(center - halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]), 0.0);
+				axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 			}
 			{
