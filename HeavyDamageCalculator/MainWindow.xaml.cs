@@ -139,6 +139,8 @@ namespace HeavyDamageCalculator {
 		#region 画面内のオブジェクトに関するイベント処理
 		// マウスの移動前座標
 		dPoint? dragPoint = null;
+		// 表示スケール変化時に、スケール変更と感知するための最小相対移動距離
+		const double ChartScaleChangeThreshold = 0.1;
 		// 「入力中のグラフを表示」チェックボックスを操作した際の処理
 		private void PrimaryCheckBox_Changed(object sender, RoutedEventArgs e) {
 			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
@@ -167,47 +169,26 @@ namespace HeavyDamageCalculator {
 		private void ProbChart_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e) {
 			if(!dragPoint.HasValue)
 				return;
-			// diff_Xはドラッグ時の移動距離
-			var diffWigth = dragPoint.Value.X - e.Location.X;
-			//var diffHeight = e.Location.Y - dragPoint.Value.Y;
-			// 移動距離をグラフ座標に変換する
-			var chartWidth = ProbChart.Width;
-			//var chartHeight = ProbChart.Height;
 			var chartArea = ProbChart.ChartAreas[0];
+			// X軸方向の移動距離(グラフ座標換算)
+			var pixelOffsetX = dragPoint.Value.X - e.Location.X;
+			var pixelSizeX = ProbChart.Width;
 			var chartScaleX = chartArea.AxisX.Maximum - chartArea.AxisX.Minimum;
-			//var chartScaleY = chartArea.AxisY.Maximum - chartArea.AxisY.Minimum;
-			var diffScaleX = chartScaleX * diffWigth / chartWidth;
-			//var diffScaleY = chartScaleY * diffHeight / chartHeight;
-			//Console.WriteLine($"check {diffScaleX},${diffScaleY}");
-			// 移動距離が、グラフのマス目より小さい場合はまだ動かさない
-			if(Math.Abs(diffScaleX) < chartScaleIntervalX[chartScaleIntervalIndexX]
-			/*&& Math.Abs(diffScaleY) < chartScaleIntervalY[chartScaleIntervalIndexY]*/)
-				return;
+			var chartOffsetX = chartScaleX * pixelOffsetX / pixelSizeX;
+			// X軸方向の移動を検知したら、それだけを行うようにする
+			if(Math.Abs(chartOffsetX) < chartScaleIntervalX[chartScaleIntervalIndexX])
+				return;			
 			// グラフのマス目の分だけ移動距離を丸める
-			diffScaleX = (int)SpecialRound(diffScaleX, chartScaleIntervalX[chartScaleIntervalIndexX]);
-			//diffScaleY = (int)SpecialFloor(diffScaleY, chartScaleIntervalY[chartScaleIntervalIndexY]);
-			//Console.WriteLine($"move {diffScaleX},${diffScaleY}");
+			chartOffsetX = (int)SpecialRound(chartOffsetX, chartScaleIntervalX[chartScaleIntervalIndexX]);
 			// 移動させて「範囲」から外れないかを判定しつつ動かす
-			var xmin = chartArea.AxisX.Minimum + diffScaleX;
-			var xmax = chartArea.AxisX.Maximum + diffScaleX;
+			var xmin = chartArea.AxisX.Minimum + chartOffsetX;
+			var xmax = chartArea.AxisX.Maximum + chartOffsetX;
 			if(xmin < 0) {
 				xmax += -xmin;
 				xmin = 0;
 			}
 			chartArea.AxisX.Minimum = xmin;
 			chartArea.AxisX.Maximum = xmax;
-			/*var ymin = chartArea.AxisY.Minimum + diffScaleY;
-			var ymax = chartArea.AxisY.Maximum + diffScaleY;
-			if(ymin < 0) {
-				ymax += -ymin;
-				ymin = 0;
-			}
-			if(ymax > 100) {
-				ymin -= ymax - 100;
-				ymax = 100;
-			}
-			chartArea.AxisY.Minimum = ymin;
-			chartArea.AxisY.Maximum = ymax;*/
 			// dragPointを変更
 			dragPoint = e.Location;
 		}
@@ -217,6 +198,10 @@ namespace HeavyDamageCalculator {
 			ProbChart.ChartAreas[0].AxisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 			chartScaleIntervalIndexY = (int)Math.Round(ChartIntervalSlider.Value);
 			ProbChart.ChartAreas[0].AxisY.Interval = chartScaleIntervalY[chartScaleIntervalIndexY];
+		}
+		// 倍率用スライダーを動かした際の処理
+		private void ChartScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			this.Draw();
 		}
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -308,8 +293,12 @@ namespace HeavyDamageCalculator {
 			{
 				var axisX = ProbChart.ChartAreas[0].AxisX;
 				axisX.Title = "最終攻撃力";
-				axisX.Minimum = SpecialFloor(minAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
-				axisX.Maximum = SpecialCeiling(maxAxisX, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				var minimum = minAxisX;
+				var maximum = maxAxisX;
+				var center = (maximum + minimum) / 2;
+				var halfRange = maximum - center;
+				axisX.Minimum = SpecialFloor(center - halfRange * ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
+				axisX.Maximum = SpecialCeiling(center + halfRange * ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 			}
 			{
