@@ -22,6 +22,7 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 - 「最大耐久」スライダーと「現在耐久」スライダーは連動しており、必ず最大耐久≧現在耐久となります
 - グラフはマウスで1マスづつドラッグで動かすことができます
 - ウィンドウサイズおよびパラメーターの値はメニューの「編集」以下からリセットできます
+- 「右端を平行線表示」にチェックを入れると、右端(オーバーキルによるストッパー発動時の大破率)が横平行線として描画されるようになります
 
 # 補足
 　折れ線グラフを描くのに使ったアルゴリズム(6点式の方)は、avaris氏(Twitter : @nc254cntct)が考案したものです。  
@@ -31,6 +32,9 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 MIT License
 
 # 更新履歴
+## Ver.1.4.0
+- 「右端を平行線表示」チェックボックスを追加
+
 ## Ver.1.3.0
 - 罫線の細かさを表すスライダーの方向が逆だったので修正
 - 伸縮率を縦横比固定にしないようにした
