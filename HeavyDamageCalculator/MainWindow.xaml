@@ -38,8 +38,9 @@
 				<MenuItem Name="ClearGraphMenu" Header="グラフを消去(_D)" Click="ClearGraphMenu_Click" />
 			</MenuItem>
 			<MenuItem Header="オプション(_O)">
-				<MenuItem Name="NaiveCheckMenu" IsCheckable="True" Header="ナイーブな実装で計算" Checked="NaiveCheckMenu_Changed" Unchecked="NaiveCheckMenu_Changed" />
 				<MenuItem Name="PrimaryCheckMenu" IsCheckable="True" Header="入力中のグラフを表示" IsChecked="True" Checked="PrimaryCheckMenu_Changed" Unchecked="PrimaryCheckMenu_Changed" />
+				<MenuItem Name="NaiveCheckMenu" IsCheckable="True" Header="ナイーブな実装で計算" Checked="NaiveCheckMenu_Changed" Unchecked="NaiveCheckMenu_Changed" />
+				<MenuItem Name="AfterLineCheckMenu" IsCheckable="True" Header="右端を平行線表示" Checked="AfterLineCheckMenu_Changed" Unchecked="AfterLineCheckMenu_Changed" />
 			</MenuItem>
 			<MenuItem Header="ヘルプ(_H)">
 				<MenuItem Name="AboutMenu" Header="バージョン情報(_A)" Click="AboutMenu_Click" />
@@ -73,6 +74,7 @@
 			<Button Name="AddGraphButton" Content="グラフを追加" Margin="2.5,2.5,2.5,2.5" Padding="2.5,2.5,2.5,2.5" Click="AddGraphMenu_Click" TabIndex="7"/>
 			<CheckBox Name="PrimaryCheckBox" Content="入力中のグラフを表示" IsChecked="True" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="PrimaryCheckBox_Changed" Unchecked="PrimaryCheckBox_Changed" TabIndex="8"/>
 			<CheckBox Name="NaiveCheckBox" Content="ナイーブな実装で計算" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="NaiveCheckBox_Changed" Unchecked="NaiveCheckBox_Changed" TabIndex="9"/>
+			<CheckBox Name="AfterLineCheckBox" Content="右端を平行線表示" Margin="2.5,2.5,2.5,2.5" VerticalAlignment="Center" Checked="AfterLineCheckBox_Changed" Unchecked="AfterLineCheckBox_Changed" TabIndex="10" />
 		</StackPanel>
 		<Grid DockPanel.Dock="Bottom" Margin="10,5,10,10">
 			<Grid.RowDefinitions>
@@ -93,10 +95,10 @@
 				</wfc:Chart>
 			</WindowsFormsHost>
 			<TextBlock Text="荒" Grid.Row="0" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" ValueChanged="ChartIntervalSlider_ValueChanged" TabIndex="10" />
+			<Slider x:Name="ChartIntervalSlider" Grid.Column="1" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="3" SmallChange="1" Value="2" ValueChanged="ChartIntervalSlider_ValueChanged" TabIndex="11" />
 			<TextBlock Text="細" Grid.Row="2" Grid.Column="1" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 			<TextBlock Text="拡" Grid.Row="0" Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-			<Slider x:Name="ChartScaleSlider" Grid.Column="2" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="10" Minimum="0.1" Value="1" ValueChanged="ChartScaleSlider_ValueChanged" TabIndex="11" />
+			<Slider x:Name="ChartScaleSlider" Grid.Column="2" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="10" Minimum="0.1" Value="1" ValueChanged="ChartScaleSlider_ValueChanged" TabIndex="12" />
 			<TextBlock Text="縮" Grid.Row="2" Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		</Grid>
 	</DockPanel>

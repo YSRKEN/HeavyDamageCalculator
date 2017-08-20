@@ -19,12 +19,14 @@ namespace HeavyDamageCalculator {
 		public int Armor;
 		public int NowHp;
 		public bool NaiveFlg;
-		public GraphParameter(string name, int maxHp, int armor, int nowHp, bool naiveFlg) {
+		public bool AfterFlg;
+		public GraphParameter(string name, int maxHp, int armor, int nowHp, bool naiveFlg, bool afterFlg) {
 			Name = name;
 			MaxHp = maxHp;
 			Armor = armor;
 			NowHp = nowHp;
 			NaiveFlg = naiveFlg;
+			AfterFlg = afterFlg;
 		}
 	}
 	/// <summary>

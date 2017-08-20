@@ -119,6 +119,11 @@ namespace HeavyDamageCalculator {
 				PrimaryCheckBox.IsChecked = PrimaryCheckMenu.IsChecked;
 			this.Draw();
 		}
+		private void AfterLineCheckMenu_Changed(object sender, RoutedEventArgs e) {
+			if (AfterLineCheckBox != null && AfterLineCheckMenu != null)
+				AfterLineCheckBox.IsChecked = AfterLineCheckMenu.IsChecked;
+			this.Draw();
+		}
 		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
 			// 自分自身のバージョン情報を取得する
 			// (http://dobon.net/vb/dotnet/file/myversioninfo.html)
@@ -158,6 +163,12 @@ namespace HeavyDamageCalculator {
 			if(NaiveCheckBox != null && NaiveCheckMenu != null)
 				NaiveCheckMenu.IsChecked = (bool)NaiveCheckBox.IsChecked;
 			NaiveCheckMenu_Changed(sender, e);
+		}
+		// 「右端を平行線表示」チェックボックスを操作した際の処理
+		private void AfterLineCheckBox_Changed(object sender, RoutedEventArgs e) {
+			if (AfterLineCheckBox != null && AfterLineCheckMenu != null)
+				AfterLineCheckMenu.IsChecked = (bool)AfterLineCheckBox.IsChecked;
+			AfterLineCheckMenu_Changed(sender, e);
 		}
 		// パラメーター用スライダーを動かした際の処理
 		private void ParameterSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -239,7 +250,7 @@ namespace HeavyDamageCalculator {
 		GraphParameter NowGraphParameter {
 			get {
 				var bindData = this.DataContext as MainWindowViewModel;
-				return new GraphParameter(bindData.ParameterName, bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, NaiveCheckMenu.IsChecked);
+				return new GraphParameter(bindData.ParameterName, bindData.MaxHpValue, bindData.ArmorValue, bindData.NowHpValue, NaiveCheckMenu.IsChecked, AfterLineCheckMenu.IsChecked);
 			}
 		}
 		// グラフをプロットする
