@@ -52,15 +52,15 @@ namespace HeavyDamageCalculator {
 		/// <param name="armor">装甲値</param>
 		/// <param name="nowHp">現在の耐久値</param>
 		/// <returns>プロット用データ</returns>
-		public static List<Point> CalcPlotData(int maxHp, int armor, int nowHp, bool naiveFlg) {
+		public static List<Point> CalcPlotData(int maxHp, int armor, int nowHp, bool naiveFlg, bool afterFlg) {
 			if(naiveFlg) {
-				return CalcPlotDataNaive(maxHp, armor, nowHp);
+				return CalcPlotDataNaive(maxHp, armor, nowHp, afterFlg);
 			} else {
-				return CalcPlotDataOriginal(maxHp, armor, nowHp);
+				return CalcPlotDataOriginal(maxHp, armor, nowHp, afterFlg);
 			}
 		}
 		public static List<Point> CalcPlotData(GraphParameter g) {
-			return CalcPlotData(g.MaxHp, g.Armor, g.NowHp, g.NaiveFlg);
+			return CalcPlotData(g.MaxHp, g.Armor, g.NowHp, g.NaiveFlg, g.AfterFlg);
 		}
 		/// <summary>
 		/// プロット用データを用意する(オリジナル版)
@@ -69,7 +69,7 @@ namespace HeavyDamageCalculator {
 		/// <param name="armor">装甲値</param>
 		/// <param name="nowHp">現在の耐久値</param>
 		/// <returns>プロット用データ</returns>
-		public static List<Point> CalcPlotDataOriginal(int maxHp, int armor, int nowHp) {
+		public static List<Point> CalcPlotDataOriginal(int maxHp, int armor, int nowHp, bool afterFlg) {
 			// 大破判定を受ける最大の耐久値
 			int heavyDamageHp = maxHp / 4;
 			// 装甲乱数の最小値と範囲と最大値
@@ -116,6 +116,8 @@ namespace HeavyDamageCalculator {
 			}
 			// x軸の値でソート
 			output.Sort((p, q) => Math.Sign(p.X - q.X));
+			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばす
+			if(afterFlg) output.Add(new Point { X = 1000, Y = output.Last().Y });
 			return output;
 		}
 		/// <summary>
@@ -195,7 +197,7 @@ namespace HeavyDamageCalculator {
 		/// <param name="armor">装甲値</param>
 		/// <param name="nowHp">現在の耐久値</param>
 		/// <returns>プロット用データ</returns>
-		public static List<Point> CalcPlotDataNaive(int maxHp, int armor, int nowHp) {
+		public static List<Point> CalcPlotDataNaive(int maxHp, int armor, int nowHp, bool afterFlg) {
 			// 書き込み用データを用意
 			var output = new List<Point>();
 			// 大破判定を受ける最大の耐久値
@@ -234,6 +236,8 @@ namespace HeavyDamageCalculator {
 				// データ追加
 				output.Add(new Point { X = x, Y = heavyDamagePer });
 			}
+			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばす
+			if (afterFlg) output.Add(new Point { X = 1000, Y = output.Last().Y });
 			return output;
 		}
 	}
