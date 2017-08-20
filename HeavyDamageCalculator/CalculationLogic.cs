@@ -116,8 +116,8 @@ namespace HeavyDamageCalculator {
 			}
 			// x軸の値でソート
 			output.Sort((p, q) => Math.Sign(p.X - q.X));
-			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばす
-			if(afterFlg) output.Add(new Point { X = 1000, Y = output.Last().Y });
+			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばせるようにする
+			output.Add(new Point { X = 1000, Y = output.Last().Y });
 			return output;
 		}
 		/// <summary>
@@ -236,8 +236,8 @@ namespace HeavyDamageCalculator {
 				// データ追加
 				output.Add(new Point { X = x, Y = heavyDamagePer });
 			}
-			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばす
-			if (afterFlg) output.Add(new Point { X = 1000, Y = output.Last().Y });
+			// 「右端を平行線表示」チェックが入っていた際は、右端を強引に伸ばせるようにする
+			output.Add(new Point { X = 1000, Y = output.Last().Y });
 			return output;
 		}
 	}

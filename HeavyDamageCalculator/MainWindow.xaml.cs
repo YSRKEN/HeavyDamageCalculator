@@ -274,9 +274,9 @@ namespace HeavyDamageCalculator {
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
 				var plotData = CalculationLogic.CalcPlotData(NowGraphParameter);
-				for(int i = 0; i < plotData.Count; ++i) {
+				for(int i = 0; i < plotData.Count - (AfterLineCheckMenu.IsChecked ? 0 : 1); ++i) {
 					series.Points.AddXY(plotData[i].X, plotData[i].Y * 100);
-					if (AfterLineCheckMenu.IsChecked && i == plotData.Count - 1)
+					if (plotData[i].X > 950.0)
 						continue;
 					minAxisX = Math.Min(minAxisX, plotData[i].X);
 					maxAxisX = Math.Max(maxAxisX, plotData[i].X);
@@ -296,11 +296,13 @@ namespace HeavyDamageCalculator {
 				series.ChartType = SeriesChartType.Line;
 				series.BorderWidth = 2;
 				var plotData = CalculationLogic.CalcPlotData(graphParameter);
-				foreach(var point in plotData) {
-					series.Points.AddXY(point.X, point.Y * 100);
-					minAxisX = Math.Min(minAxisX, point.X);
-					maxAxisX = Math.Max(maxAxisX, point.X);
-					maxAxisY = Math.Max(maxAxisY, point.Y * 100);
+				for (int i = 0; i < plotData.Count - (AfterLineCheckMenu.IsChecked ? 0 : 1); ++i) {
+					series.Points.AddXY(plotData[i].X, plotData[i].Y * 100);
+					if (plotData[i].X > 950.0)
+						continue;
+					minAxisX = Math.Min(minAxisX, plotData[i].X);
+					maxAxisX = Math.Max(maxAxisX, plotData[i].X);
+					maxAxisY = Math.Max(maxAxisY, plotData[i].Y * 100);
 				}
 				ProbChart.Series.Add(series);
 				var legend = new Legend();
