@@ -112,17 +112,17 @@ namespace HeavyDamageCalculator {
 		private void NaiveCheckMenu_Changed(object sender, RoutedEventArgs e) {
 			if(NaiveCheckBox != null && NaiveCheckMenu != null)
 				NaiveCheckBox.IsChecked = NaiveCheckMenu.IsChecked;
-			this.Draw();
+			this.Draw(false);
 		}
 		private void PrimaryCheckMenu_Changed(object sender, RoutedEventArgs e) {
 			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
 				PrimaryCheckBox.IsChecked = PrimaryCheckMenu.IsChecked;
-			this.Draw();
+			this.Draw(false);
 		}
 		private void AfterLineCheckMenu_Changed(object sender, RoutedEventArgs e) {
 			if (AfterLineCheckBox != null && AfterLineCheckMenu != null)
 				AfterLineCheckBox.IsChecked = AfterLineCheckMenu.IsChecked;
-			this.Draw();
+			this.Draw(false);
 		}
 		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
 			// 自分自身のバージョン情報を取得する
@@ -222,7 +222,7 @@ namespace HeavyDamageCalculator {
 		}
 		// 画面下のスライダーを動かした際の処理
 		private void ChartCursorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			this.Draw();
+			this.Draw(false);
 		}
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -258,7 +258,7 @@ namespace HeavyDamageCalculator {
 			}
 		}
 		// グラフをプロットする
-		public void Draw() {
+		public void Draw(bool reScaleFlg = true) {
 			// 初期化前は何もしない
 			if(ProbChart == null)
 				return;
@@ -345,9 +345,11 @@ namespace HeavyDamageCalculator {
 				var maximum = maxAxisX;
 				var center = (maximum + minimum) / 2;
 				var halfRange = maximum - center;
-				axisX.Minimum = Math.Max(SpecialFloor(center - halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]), 0.0);
-				axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
-				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+				if (reScaleFlg) {
+					axisX.Minimum = Math.Max(SpecialFloor(center - halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]), 0.0);
+					axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
+					axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+				}
 				if (ChartCursorSlider != null) {
 					ChartCursorSlider.Minimum = (int)axisX.Minimum;
 					ChartCursorSlider.Maximum = (int)axisX.Maximum;
