@@ -240,5 +240,29 @@ namespace HeavyDamageCalculator {
 			output.Add(new Point { X = 1000, Y = output.Last().Y });
 			return output;
 		}
+		/// <summary>
+		/// 線形補間により、グラフの数値を読み取る
+		/// </summary>
+		/// <param name="plotData">プロット用データ</param>
+		/// <param name="x">Xの値</param>
+		/// <returns>Yの値</returns>
+		public static double CalcGraphValueLinear(List<Point> plotData, double x) {
+			// プロット用データの右端・左端よりも遠くの位置にあるなら
+			if (plotData.First().X >= x)
+				return plotData.First().Y;
+			if (plotData.Last().X <= x)
+				return plotData.Last().Y;
+			// ↑よりXの値は2つのプロット点の間にあることが保証されているので探す
+			int count = plotData.Count;
+			for(int i = 0; i < count - 1; ++i) {
+				if(plotData[i].X <= x && x <= plotData[i + 1].X) {
+					// 線形補間した値を返す
+					double alpha = (x - plotData[i].X) / (plotData[i + 1].X - plotData[i].X);
+					return alpha * (plotData[i + 1].Y - plotData[i].Y) + plotData[i].Y;
+				}
+			}
+			// その他(便宜上設置)
+			return 0.0;
+		}
 	}
 }

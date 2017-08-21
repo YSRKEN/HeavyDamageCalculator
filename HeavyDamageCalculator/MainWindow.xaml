@@ -92,7 +92,8 @@
 			<TextBlock Text="拡" Grid.Row="0" Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" />
 			<Slider x:Name="ChartScaleSlider" Grid.Column="2" Grid.Row="1" Orientation="Vertical" Width="30" HorizontalAlignment="Center" Maximum="10" Minimum="0.1" Value="1" ValueChanged="ChartScaleSlider_ValueChanged" TabIndex="12" />
 			<TextBlock Text="縮" Grid.Row="2" Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center" />
-			<Slider x:Name="ChartCursorSlider" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TabIndex="13" Maximum="{Binding ChartCursorMax, Mode=TwoWay}" Minimum="{Binding ChartCursorMin, Mode=TwoWay}" SmallChange="1" Value="0" Margin="10,8,10,7" ValueChanged="ChartCursorSlider_ValueChanged" Interval="1" />
+			<Slider x:Name="ChartCursorSlider" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TabIndex="13"
+					SmallChange="1" Value="0" Margin="10,8,10,7" ValueChanged="ChartCursorSlider_ValueChanged" Interval="1" />
 		</Grid>
 	</DockPanel>
 </Window>

@@ -315,7 +315,7 @@ namespace HeavyDamageCalculator {
 				ProbChart.Legends.Add(legend);
 			}
 			// スライドバーに合った位置の縦棒を追加する
-			if(ChartCursorSlider != null) {
+			if(ChartCursorSlider != null && (PrimaryCheckMenu.IsChecked || graphParameterStock.Count >= 1)) {
 				var series = new Series();
 				series.Name = "Cursor";
 				series.ChartType = SeriesChartType.Line;
@@ -324,7 +324,18 @@ namespace HeavyDamageCalculator {
 				series.Points.AddXY(cursorValue, 0);
 				series.Points.AddXY(cursorValue, 100);
 				ProbChart.Series.Add(series);
-				this.Title = $"HeavyDamageCalculator(最終攻撃力{cursorValue})";
+				// 縦棒の位置における各グラフの数値を読み取り、表示に加える
+				string titleText = $"HeavyDamageCalculator(最終攻撃力{cursorValue}";
+				if (PrimaryCheckMenu.IsChecked) {
+					var plotData = CalculationLogic.CalcPlotData(NowGraphParameter);
+					titleText += $",{Math.Round(CalculationLogic.CalcGraphValueLinear(plotData, cursorValue) * 100, 1)}%";
+				}
+				foreach (var graphParameter in graphParameterStock) {
+					var plotData = CalculationLogic.CalcPlotData(graphParameter);
+					titleText += $",{Math.Round(CalculationLogic.CalcGraphValueLinear(plotData, cursorValue) * 100, 1)}%";
+				}
+				titleText += ")";
+				this.Title = titleText;
 			}
 			// スケールを調整する
 			{
@@ -338,8 +349,8 @@ namespace HeavyDamageCalculator {
 				axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 				if (ChartCursorSlider != null) {
-					bindData.ChartCursorMin = (int)axisX.Minimum;
-					bindData.ChartCursorMax = (int)axisX.Maximum;
+					ChartCursorSlider.Minimum = (int)axisX.Minimum;
+					ChartCursorSlider.Maximum = (int)axisX.Maximum;
 				}
 			}
 			{
