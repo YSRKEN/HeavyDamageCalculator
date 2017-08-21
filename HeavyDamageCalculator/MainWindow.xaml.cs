@@ -220,6 +220,15 @@ namespace HeavyDamageCalculator {
 		private void ChartScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			this.Draw();
 		}
+		// 画面下のスライダーを動かした際の処理
+		private void ChartCursorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+			var value = (int)ChartCursorSlider.Value;
+			var bindData = DataContext as MainWindowViewModel;
+			var min = bindData.ChartCursorMin;
+			var max = bindData.ChartCursorMax;
+			Console.WriteLine($"{value} {min}-{max}");
+			this.Draw();
+		}
 		// ウィンドウのサイズが変化する
 		private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
 			var bindData = this.DataContext as MainWindowViewModel;
@@ -321,6 +330,10 @@ namespace HeavyDamageCalculator {
 				axisX.Minimum = Math.Max(SpecialFloor(center - halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]), 0.0);
 				axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
 				axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
+				if (ChartCursorSlider != null) {
+					bindData.ChartCursorMin = (int)axisX.Minimum;
+					bindData.ChartCursorMax = (int)axisX.Maximum;
+				}
 			}
 			{
 				var axisY = ProbChart.ChartAreas[0].AxisY;

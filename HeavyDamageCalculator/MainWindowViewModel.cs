@@ -13,7 +13,7 @@ namespace HeavyDamageCalculator {
 			get { return maxHpValue; }
 			set {
 				// 現在耐久より小さければ、現在耐久の値を小さくする
-				if(nowHpValue > value) {
+				if (nowHpValue > value) {
 					NowHpValue = value;
 				}
 				this.SetProperty(ref this.maxHpValue, value);
@@ -33,7 +33,7 @@ namespace HeavyDamageCalculator {
 			get { return nowHpValue; }
 			set {
 				// 最大耐久より大きければ、最大耐久の値を大きくする
-				if(maxHpValue < value) {
+				if (maxHpValue < value) {
 					MaxHpValue = value;
 				}
 				this.SetProperty(ref this.nowHpValue, Math.Min(maxHpValue, value));
@@ -66,6 +66,23 @@ namespace HeavyDamageCalculator {
 			}
 			set {
 				this.SetProperty(ref this.scaleY, value);
+			}
+		}
+		// 画面下部のスライダーの位置
+		int chartCursorMin = 30;
+		public int ChartCursorMin {
+			get => chartCursorMin;
+			set{
+				chartCursorMin = value;
+				this.SetProperty(ref this.chartCursorMin, value);
+			}
+		}
+		int chartCursorMax = 100;
+		public int ChartCursorMax {
+			get => chartCursorMax;
+			set {
+				chartCursorMax = value;
+				this.SetProperty(ref this.chartCursorMax, value);
 			}
 		}
 	}
