@@ -222,11 +222,6 @@ namespace HeavyDamageCalculator {
 		}
 		// 画面下のスライダーを動かした際の処理
 		private void ChartCursorSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			var value = (int)ChartCursorSlider.Value;
-			var bindData = DataContext as MainWindowViewModel;
-			var min = bindData.ChartCursorMin;
-			var max = bindData.ChartCursorMax;
-			Console.WriteLine($"{value} {min}-{max}");
 			this.Draw();
 		}
 		// ウィンドウのサイズが変化する
@@ -318,6 +313,18 @@ namespace HeavyDamageCalculator {
 				legend.DockedToChartArea = "ChartArea";
 				legend.Alignment = StringAlignment.Far;
 				ProbChart.Legends.Add(legend);
+			}
+			// スライドバーに合った位置の縦棒を追加する
+			if(ChartCursorSlider != null) {
+				var series = new Series();
+				series.Name = "Cursor";
+				series.ChartType = SeriesChartType.Line;
+				series.BorderWidth = 2;
+				int cursorValue = (int)ChartCursorSlider.Value;
+				series.Points.AddXY(cursorValue, 0);
+				series.Points.AddXY(cursorValue, 100);
+				ProbChart.Series.Add(series);
+				this.Title = $"HeavyDamageCalculator(最終攻撃力{cursorValue})";
 			}
 			// スケールを調整する
 			{
