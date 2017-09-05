@@ -103,6 +103,12 @@ namespace HeavyDamageCalculator {
 				MessageBox.Show("グラフ名を入力してください.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
+			foreach(var param in graphParameterStock){
+				if(NowGraphParameter.Name == param.Name) {
+					MessageBox.Show("既に同名のグラフが存在しています.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+					return;
+				}
+			}
 			graphParameterStock.Add(NowGraphParameter);
 		}
 		private void ClearGraphMenu_Click(object sender, RoutedEventArgs e) {

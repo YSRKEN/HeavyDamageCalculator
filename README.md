@@ -32,6 +32,9 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 MIT License
 
 # 更新履歴
+## Ver.1.5.1
+- 既存のグラフ群と同じ名前のグラフを追加しようとすると警告を表示し、止めるようにした
+
 ## Ver.1.5.0
 - 大破率を読み取るためのカーソルを実装した
 - UIの使いやすさを改良した
