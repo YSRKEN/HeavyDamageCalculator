@@ -356,6 +356,10 @@ namespace HeavyDamageCalculator {
 					axisX.Maximum = SpecialCeiling(center + halfRange / ChartScaleSlider.Value, chartScaleIntervalX[chartScaleIntervalIndexX]);
 					axisX.Interval = chartScaleIntervalX[chartScaleIntervalIndexX];
 				}
+				else {
+					axisX.Minimum = minimum;
+					axisX.Maximum = maximum;
+				}
 				if (ChartCursorSlider != null) {
 					ChartCursorSlider.Minimum = (int)axisX.Minimum;
 					ChartCursorSlider.Maximum = (int)axisX.Maximum;
