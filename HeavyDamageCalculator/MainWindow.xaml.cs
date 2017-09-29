@@ -45,6 +45,20 @@ namespace HeavyDamageCalculator {
 				}
 			}
 		}
+		private void ExportMenu_Click(object sender, RoutedEventArgs e) {
+			var sfd = new SaveFileDialog();
+			sfd.FileName = "param.csv";
+			sfd.Filter = "グラフパラメーター(*.csv)|*.csv|すべてのファイル(*.*) | *.* ";
+			sfd.AddExtension = true;
+			if ((bool)sfd.ShowDialog()) {
+				try {
+					SaveGraphParameter(sfd.FileName);
+				}
+				catch (Exception) {
+					MessageBox.Show("ファイルの保存に失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			}
+		}
 		private void CopyPicMenu_Click(object sender, RoutedEventArgs e) {
 			var stream = new System.IO.MemoryStream();
 			ProbChart.SaveImage(stream, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -457,6 +471,15 @@ namespace HeavyDamageCalculator {
 			// 読み込んだ結果を反映する
 			graphParameterStock = tempGPS;
 			this.Draw();
+		}
+		// グラフのパラメーターをファイルに書き込む
+		void SaveGraphParameter(string fileName) {
+			using (var sw = new System.IO.StreamWriter(fileName)) {
+				sw.WriteLine("name,max_hp,defense,now_hp");
+				foreach(var gp in graphParameterStock) {
+					sw.WriteLine($"{gp.Name},{gp.MaxHp},{gp.Armor},{gp.NowHp}");
+				}
+			}
 		}
 		#endregion
 		#region ユーティリティ
