@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,6 +32,19 @@ namespace HeavyDamageCalculator {
 			this.Draw();
 		}
 		#region メニュー処理
+		private void ImportMenu_Click(object sender, RoutedEventArgs e) {
+			var ofd = new OpenFileDialog();
+			ofd.Filter = "グラフパラメーター(*.csv)|*.csv|すべてのファイル(*.*) | *.* ";
+			ofd.AddExtension = true;
+			if ((bool)ofd.ShowDialog()) {
+				try {
+					LoadGraphParameter(ofd.FileName);
+				}
+				catch (Exception) {
+					MessageBox.Show("ファイルの読み込みに失敗しました.", "HeavyDamageCalculator", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			}
+		}
 		private void CopyPicMenu_Click(object sender, RoutedEventArgs e) {
 			var stream = new System.IO.MemoryStream();
 			ProbChart.SaveImage(stream, System.Drawing.Imaging.ImageFormat.Bmp);
@@ -397,6 +411,52 @@ namespace HeavyDamageCalculator {
 				}
 			}
 			return output;
+		}
+		// グラフのパラメーターをファイルから読み込む
+		void LoadGraphParameter(string fileName) {
+			// ファイルを読み込む
+			var tempGPS = new List<GraphParameter>();
+			using (var sr = new System.IO.StreamReader(fileName)) {
+				while (!sr.EndOfStream) {
+					// 1行を読み込む
+					string line = sr.ReadLine();
+					// マッチさせてから各数値を取り出す
+					string pattern = @"^(?<Name>[^,]+),(?<MaxHP>\d+),(?<Defense>\d+),(?<NowHP>[\d-]+)";
+					var match = Regex.Match(line, pattern);
+					if (!match.Success) {
+						continue;
+					}
+					// 取り出した数値をGraphParameterに変換し、tempGPSに代入する
+					{
+						try {
+							// 読み込む
+							string name = match.Groups["Name"].Value;
+							int maxHp = int.Parse(match.Groups["MaxHP"].Value);
+							int defense = int.Parse(match.Groups["Defense"].Value);
+							int nowHp = int.Parse(match.Groups["NowHP"].Value);
+							// 正規化
+							if (name.Length == 0) name = $"グラフ{tempGPS.Count + 1}";
+							if (nowHp < 0) nowHp = maxHp;
+							maxHp = Math.Max(Math.Min(maxHp, 200), 1);
+							defense = Math.Max(Math.Min(defense, 200), 0);
+							nowHp = Math.Max(Math.Min(nowHp, 200), 1);
+							bool naiveFlg = (bool)NaiveCheckBox.IsChecked;
+							bool afterFlg = (bool)AfterLineCheckBox.IsChecked;
+							var gp = new GraphParameter(name, maxHp, defense, nowHp, naiveFlg, afterFlg);
+							tempGPS.Add(gp);
+						}
+						catch {
+							continue;
+						}
+					}
+				}
+			}
+			if(tempGPS.Count == 0) {
+				throw new Exception();
+			}
+			// 読み込んだ結果を反映する
+			graphParameterStock = tempGPS;
+			this.Draw();
 		}
 		#endregion
 		#region ユーティリティ

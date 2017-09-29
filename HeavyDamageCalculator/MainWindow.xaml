@@ -11,6 +11,7 @@
 		</DockPanel.LayoutTransform>
 		<Menu DockPanel.Dock="Top">
 			<MenuItem Header="ファイル(_F)">
+				<MenuItem Header="パラメーターをインポート...(_I)" Click="ImportMenu_Click"/>
 				<MenuItem Header="グラフをコピー(_C)">
 					<MenuItem Name="CopyPicMenu" Header="png画像...(_P)" Click="CopyPicMenu_Click" />
 					<MenuItem Name="CopyTextMenu" Header="gnuplot形式...(_G)" Click="CopyTextMenu_Click" />
