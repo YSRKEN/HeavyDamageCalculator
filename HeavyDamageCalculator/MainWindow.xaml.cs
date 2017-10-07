@@ -435,10 +435,17 @@ namespace HeavyDamageCalculator {
 					// 1行を読み込む
 					string line = sr.ReadLine();
 					// マッチさせてから各数値を取り出す
-					string pattern = @"^(?<Name>[^,]+),(?<MaxHP>\d+),(?<Defense>\d+),(?<NowHP>[\d-]+)";
+					string pattern = @"^(?<Name>[^,]+),(?<MaxHP>\d+),(?<Defense>\d+),(?<NowHP>[\d-]+),(?<NaiveFlg>[^,]+)";
 					var match = Regex.Match(line, pattern);
+					bool oldFlg = false;
 					if (!match.Success) {
-						continue;
+						// 旧形式用
+						pattern = @"^(?<Name>[^,]+),(?<MaxHP>\d+),(?<Defense>\d+),(?<NowHP>[\d-]+)";
+						match = Regex.Match(line, pattern);
+						if (!match.Success) {
+							continue;
+						}
+						oldFlg = true;
 					}
 					// 取り出した数値をGraphParameterに変換し、tempGPSに代入する
 					{
@@ -448,13 +455,13 @@ namespace HeavyDamageCalculator {
 							int maxHp = int.Parse(match.Groups["MaxHP"].Value);
 							int defense = int.Parse(match.Groups["Defense"].Value);
 							int nowHp = int.Parse(match.Groups["NowHP"].Value);
+							bool naiveFlg = (oldFlg ? (bool)NaiveCheckBox.IsChecked : match.Groups["NaiveFlg"].Value == "True" ? true : false);
 							// 正規化
 							if (name.Length == 0) name = $"グラフ{tempGPS.Count + 1}";
 							if (nowHp < 0) nowHp = maxHp;
 							maxHp = Math.Max(Math.Min(maxHp, 200), 1);
 							defense = Math.Max(Math.Min(defense, 200), 0);
 							nowHp = Math.Max(Math.Min(nowHp, 200), 1);
-							bool naiveFlg = (bool)NaiveCheckBox.IsChecked;
 							bool afterFlg = (bool)AfterLineCheckBox.IsChecked;
 							var gp = new GraphParameter(name, maxHp, defense, nowHp, naiveFlg, afterFlg);
 							tempGPS.Add(gp);
@@ -475,9 +482,9 @@ namespace HeavyDamageCalculator {
 		// グラフのパラメーターをファイルに書き込む
 		void SaveGraphParameter(string fileName) {
 			using (var sw = new System.IO.StreamWriter(fileName)) {
-				sw.WriteLine("name,max_hp,defense,now_hp");
+				sw.WriteLine("name,max_hp,defense,now_hp,naive_flg");
 				foreach(var gp in graphParameterStock) {
-					sw.WriteLine($"{gp.Name},{gp.MaxHp},{gp.Armor},{gp.NowHp}");
+					sw.WriteLine($"{gp.Name},{gp.MaxHp},{gp.Armor},{gp.NowHp},{gp.NaiveFlg}");
 				}
 			}
 		}
