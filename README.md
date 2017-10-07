@@ -15,6 +15,7 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 ## 複数グラフ表示機能について
 - 「グラフを追加」ボタンの左側にあるテキストボックスには、追加するグラフの名前を入力します
 - テキストボックスに入力後、「グラフを追加」すると、それが画面下に表示されます
+- メニューの「編集」→「グラフを全て消去」を選択すると、入力したグラフを全て消去できます
 - 上記を繰り返せば、複数のパターンを1つのグラフに表示させることが可能です
 - 複数表示したグラフは、「png画像」か「gnuplot形式テキスト」で、「コピー」か「保存」できます。
 
@@ -23,7 +24,7 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 - グラフのパラメーターは、次のような形式のCSVファイルです(UTF-8)
 - now_hpを負数にすると、読み込み時に内部でmax_hpと同じ値にします
 
-![image](https://user-images.githubusercontent.com/3734392/31020600-6d4bf8ec-a56e-11e7-8ced-4cb62e20ec2b.png)
+![help.png](https://user-images.githubusercontent.com/3734392/31310870-ea760020-abda-11e7-9aea-687b16f57689.png)
 
 ## その他
 - 「最大耐久」スライダーと「現在耐久」スライダーは連動しており、必ず最大耐久≧現在耐久となります
@@ -40,6 +41,10 @@ Calculate probability of heavy damage status of KantaiCollection by C#
 MIT License
 
 # 更新履歴
+## Ver.1.5.3
+- インポート・エクスポートするパラメーター情報に、「ナイーブな実装で計算」するかの情報も追加した
+- 「入力中のグラフを表示」していない際に「グラフを全て消去」すると、再度チェックを入れた際にエラーが出る問題を修正した
+
 ## Ver.1.5.2
 - 画面右のスクロールバーが一部効いていなかった不具合を修正
 - グラフのパラメーターをインポート/エクスポートするメニューを設けた
