@@ -140,8 +140,12 @@ namespace HeavyDamageCalculator {
 			graphParameterStock.Add(NowGraphParameter);
 		}
 		private void ClearGraphMenu_Click(object sender, RoutedEventArgs e) {
-			graphParameterStock = new List<GraphParameter>();
-			this.Draw();
+			// 「入力中のグラフを表示」してないと全消去できないようにした
+			if (PrimaryCheckBox != null && PrimaryCheckMenu != null) {
+				if (!PrimaryCheckMenu.IsChecked) return;
+				graphParameterStock = new List<GraphParameter>();
+				this.Draw();
+			}
 		}
 		private void NaiveCheckMenu_Changed(object sender, RoutedEventArgs e) {
 			if(NaiveCheckBox != null && NaiveCheckMenu != null)
@@ -149,8 +153,11 @@ namespace HeavyDamageCalculator {
 			this.Draw(false);
 		}
 		private void PrimaryCheckMenu_Changed(object sender, RoutedEventArgs e) {
-			if(PrimaryCheckBox != null && PrimaryCheckMenu != null)
+			if (PrimaryCheckBox != null && PrimaryCheckMenu != null) {
 				PrimaryCheckBox.IsChecked = PrimaryCheckMenu.IsChecked;
+				var bindData = DataContext as MainWindowViewModel;
+				bindData.AllGraphEnableFlg = (bool)PrimaryCheckBox.IsChecked;
+			}
 			this.Draw(false);
 		}
 		private void AfterLineCheckMenu_Changed(object sender, RoutedEventArgs e) {

@@ -31,7 +31,7 @@
 				<MenuItem Name="IntervalResetMenu" Header="罫線をリセット(_I)" Click="IntervalResetMenu_Click" />
 				<MenuItem Name="ScaleResetMenu" Header="スケールをリセット(_S)" Click="ScaleResetMenu_Click" />
 				<MenuItem Name="AddGraphMenu" Header="グラフを追加(_A)" Click="AddGraphMenu_Click" />
-				<MenuItem Name="ClearGraphMenu" Header="グラフを全て消去(_D)" Click="ClearGraphMenu_Click" />
+				<MenuItem Name="ClearGraphMenu" Header="グラフを全て消去(_D)" Click="ClearGraphMenu_Click" IsEnabled="{Binding AllGraphEnableFlg}" />
 			</MenuItem>
 			<MenuItem Header="オプション(_O)">
 				<MenuItem Name="PrimaryCheckMenu" IsCheckable="True" Header="入力中のグラフを表示" IsChecked="True" Checked="PrimaryCheckMenu_Changed" Unchecked="PrimaryCheckMenu_Changed" />

@@ -49,6 +49,16 @@ namespace HeavyDamageCalculator {
 				this.SetProperty(ref this.parameterName, value);
 			}
 		}
+		// 「グラフを全て消去」が有効か
+		bool allGraphEnableFlg = true;
+		public bool AllGraphEnableFlg {
+			get {
+				return allGraphEnableFlg;
+			}
+			set {
+				this.SetProperty(ref this.allGraphEnableFlg, value);
+			}
+		}
 		// ウィンドウの大きさ
 		double scaleX = 1.0;
 		public double ScaleX {
