@@ -1,0 +1,3 @@
+name,max_hp,defense,now_hp,naive_flg
+大鳳改(既婚),78,84,78,True
+大鳳改(既婚、耐久+1),79,84,79,True
